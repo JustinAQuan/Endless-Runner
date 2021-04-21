@@ -8,10 +8,14 @@ class Menu extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(game.config.width / 2, game.config.height / 2, 'GAME MENU');
+        this.add.text(game.config.width / 2, game.config.height / 2, 'GAME MENU').setOrigin(0.5, 0);
+
+        this.time.delayedCall(5000, () => {
+            this.scene.start('playCutscene');
+        }, null, this);
     }
 
     update() {
-        this.scene.start('playScene');
+
     }
 }

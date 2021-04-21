@@ -14,6 +14,10 @@ class Play extends Phaser.Scene {
         
         // adds player sprite
         this.Player = new Player(this, game.config.width / 5, game.config.height - game.config.height / 5, 'Player', 0);
+
+        this.time.delayedCall(5000, () => {
+            this.scene.start('gameOverScene');
+        }, null, this);
     }
 
     update() {

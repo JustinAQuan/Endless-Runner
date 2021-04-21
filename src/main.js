@@ -6,7 +6,7 @@ let config = {
         parent: 'phaser-example',
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [Menu, Play]
+    scene: [Menu, Cutscene, Play, GameOver]
 };
 
 let game = new Phaser.Game(config);
