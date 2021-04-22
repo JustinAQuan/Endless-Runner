@@ -36,7 +36,7 @@ class Play extends Phaser.Scene {
             this.Player.body.setVelocityY(gameOptions.jumpForce * -1);
         }
 
-        if(this.cursors.down.isDown){
+        if(this.cursors.down.isDown && this.Player.body.touching.down){
             this.Player.setTexture('Sliding');
         }
         else{
