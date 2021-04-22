@@ -22,13 +22,35 @@ Creative Tilt Justification:
 
 let config = {
     type: Phaser.AUTO,
-    width: 1200,
-    height: 600,
+
+    // width and height of canvas
+    width: 960,
+    height: 540,
+
+    // makes sure canvas is in the center of the screen
     scale: {
         parent: 'phaser-example',
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [Menu, Cutscene, Play, GameOver]
+
+    // set scenes
+    scene: [Play, GameOver],
+
+    // adds physics
+    physics: {
+        default: "arcade"
+    }
 };
 
 let game = new Phaser.Game(config);
+
+// global game options
+let gameOptions = {
+    platformStartSpeed: 350,
+    spawnRange: [100, 350],
+    platformSizeRange: [50, 250],
+    playerGravity: 900,
+    jumpForce: 400,
+    playerStartPosition: 200,
+    jumps: 2
+}
