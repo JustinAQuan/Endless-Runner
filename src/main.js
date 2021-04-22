@@ -3,7 +3,7 @@ Collaborator Names:
     Justin Quan
     Michelle Lytle
     Thea Knasiak
-s;kfljanflas;dk
+
 Game Title:
     Untitled
 
