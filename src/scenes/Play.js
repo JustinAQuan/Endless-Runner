@@ -8,6 +8,12 @@ class Play extends Phaser.Scene {
         this.load.image('Player', './assets/player.png');
         this.load.image('Sliding', './assets/player_slide.png');
 
+        // Background
+        this.load.image(
+            'bg', 
+            './assets/space_bg_full.png'
+        );
+
         // Floor
         this.load.image('Floor', './assets/floor.png');
 
@@ -44,6 +50,14 @@ class Play extends Phaser.Scene {
         this.floor = this.add.tileSprite(0, game.config.height - game.config.height / 5, game.config.width, game.config.height / 5, 'Floor').setOrigin(0, 0);
         this.physics.add.existing(this.floor);
         this.floor.body.setImmovable(true);
+
+        this.bg = this.add.tileSprite(
+            0, 
+            0, 
+            960,
+            540,
+            'bg'
+        ).setOrigin(0, 0);
         
         // adds player sprite
         this.Player = this.physics.add.sprite(game.config.width / 5, game.config.height - game.config.height / 3, 'Player');
@@ -84,6 +98,7 @@ class Play extends Phaser.Scene {
 
     update() {
         this.floor.tilePositionX += 2;
+        this.bg.tilePositionX += 2;
 
         this.playerGrounded = this.Player.body.touching.down;
 
