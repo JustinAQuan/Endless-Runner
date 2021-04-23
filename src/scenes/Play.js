@@ -10,8 +10,20 @@ class Play extends Phaser.Scene {
 
         // Background
         this.load.image(
-            'bg', 
-            './assets/space_bg_full.png'
+            'space_bg1', 
+            './assets/space_bg1.png'
+        );
+        this.load.image(
+            'space_bg2', 
+            './assets/space_bg2.png'
+        );
+        this.load.image(
+            'space_bg3', 
+            './assets/space_bg3.png'
+        );
+        this.load.image(
+            'space_bg4', 
+            './assets/space_bg4.png'
         );
 
         // Floor
@@ -51,12 +63,37 @@ class Play extends Phaser.Scene {
         this.physics.add.existing(this.floor);
         this.floor.body.setImmovable(true);
 
-        this.bg = this.add.tileSprite(
+        // adds space background 
+        this.space_bg1 = this.add.tileSprite(
             0, 
             0, 
             960,
             540,
-            'bg'
+            'space_bg1'
+        ).setOrigin(0, 0);
+
+        this.space_bg2 = this.add.tileSprite(
+            0, 
+            0, 
+            960,
+            540,
+            'space_bg2'
+        ).setOrigin(0, 0);
+
+        this.space_bg3 = this.add.tileSprite(
+            0, 
+            0, 
+            960,
+            540,
+            'space_bg3'
+        ).setOrigin(0, 0);
+
+        this.space_bg4 = this.add.tileSprite(
+            0, 
+            0, 
+            960,
+            540,
+            'space_bg4'
         ).setOrigin(0, 0);
         
         // adds player sprite
@@ -98,7 +135,11 @@ class Play extends Phaser.Scene {
 
     update() {
         this.floor.tilePositionX += 2;
-        this.bg.tilePositionX += 2;
+        // space parallax 
+        this.space_bg1.tilePositionX += 1;
+        this.space_bg2.tilePositionX += 2;
+        this.space_bg3.tilePositionX += 3;
+        this.space_bg4.tilePositionX += 4;
 
         this.playerGrounded = this.Player.body.touching.down;
 
