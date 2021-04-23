@@ -39,8 +39,13 @@ class Play extends Phaser.Scene {
         if(this.cursors.down.isDown && this.Player.body.touching.down){
             this.Player.setTexture('Sliding');
         }
+        else if(this.cursors.down.isDown && !this.Player.body.touching.down){
+            this.Player.setTexture('Player');
+            this.Player.body.setGravityY(gameOptions.playerGravity*2);
+        }
         else{
             this.Player.setTexture('Player');
+            this.Player.body.setGravityY(gameOptions.playerGravity);
         }
 
     }
