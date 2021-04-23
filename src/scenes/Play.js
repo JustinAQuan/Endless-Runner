@@ -46,7 +46,7 @@ class Play extends Phaser.Scene {
         this.floor.body.setImmovable(true);
         
         // adds player sprite
-        this.Player = this.physics.add.existing(new Player(this, game.config.width / 5, game.config.height - game.config.height / 3, 'Player', 0));
+        this.Player = this.physics.add.sprite(game.config.width / 5, game.config.height - game.config.height / 3, 'Player');
         this.Player.body.setGravityY(gameOptions.playerGravity);
 
         // setting up cursor keys
@@ -54,10 +54,11 @@ class Play extends Phaser.Scene {
 
         // allows the player to "walk" on the floor
         this.physics.add.collider(this.Player, this.floor);
-    }
 
-    gameOver() {
-        this.scene.start('gameOverScene');
+        this.isGameOver = false;
+        this.physics.add.collider(this.Player, this.bushGroup, () => {
+            this.isGameOver = true;
+        });
     }
 
     // the core of the script: bush are added from the pool or created on the fly
@@ -113,11 +114,9 @@ class Play extends Phaser.Scene {
             this.Player.body.setGravityY(gameOptions.playerGravity);
         }
 
-        if(this.Player.x < 0){
-            this.gameOver();
+        if(this.isGameOver){
+            this.scene.start('gameOverScene');
         }
-
-        this.physics.add.collider(this.Player, this.bushGroup);
 
         // recycling bush
         let minDistance = game.config.width;
