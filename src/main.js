@@ -52,3 +52,7 @@ let gameOptions = {
     jumpForce: 400,
     jumps: 1
 }
+let back_speed = 1;
+let mid_speed = 2;
+let fore_speed = 3;
+let ground_speed = 4;

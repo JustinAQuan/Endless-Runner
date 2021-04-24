@@ -35,6 +35,31 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        // adds space background 
+        this.space_bg1 = this.add.tileSprite(
+            0, 
+            0, 
+            960,
+            540,
+            'space_bg1'
+        ).setOrigin(0, 0);
+
+        this.space_bg2 = this.add.tileSprite(
+            0, 
+            0, 
+            960,
+            540,
+            'space_bg2'
+        ).setOrigin(0, 0);
+
+        this.space_bg3 = this.add.tileSprite(
+            0, 
+            0, 
+            960,
+            540,
+            'space_bg3'
+        ).setOrigin(0, 0);
+
         // group with all active bushes
         this.bushGroup = this.add.group({
  
@@ -63,31 +88,9 @@ class Play extends Phaser.Scene {
         this.physics.add.existing(this.floor);
         this.floor.body.setImmovable(true);
 
-        // adds space background 
-        this.space_bg1 = this.add.tileSprite(
-            0, 
-            0, 
-            960,
-            540,
-            'space_bg1'
-        ).setOrigin(0, 0);
-
-        this.space_bg2 = this.add.tileSprite(
-            0, 
-            0, 
-            960,
-            540,
-            'space_bg2'
-        ).setOrigin(0, 0);
-
-        this.space_bg3 = this.add.tileSprite(
-            0, 
-            0, 
-            960,
-            540,
-            'space_bg3'
-        ).setOrigin(0, 0);
-
+        // adds space floor 
+        // *** doesn't work as a floor on its own, 
+        // might just have to resize image and place it at 0, game.config.height - game.config.height / 5  instead of 0, 0 
         this.space_bg4 = this.add.tileSprite(
             0, 
             0, 
@@ -136,10 +139,10 @@ class Play extends Phaser.Scene {
     update() {
         this.floor.tilePositionX += 2;
         // space parallax 
-        this.space_bg1.tilePositionX += 1;
-        this.space_bg2.tilePositionX += 2;
-        this.space_bg3.tilePositionX += 3;
-        this.space_bg4.tilePositionX += 4;
+        this.space_bg1.tilePositionX += back_speed;
+        this.space_bg2.tilePositionX += mid_speed;
+        this.space_bg3.tilePositionX += fore_speed;
+        this.space_bg4.tilePositionX += ground_speed;
 
         this.playerGrounded = this.Player.body.touching.down;
 
