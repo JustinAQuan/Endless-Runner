@@ -32,9 +32,26 @@ class Play extends Phaser.Scene {
         // Obstacles
         this.load.image('Branch', './assets/branch.png');
         this.load.image('Bush', './assets/bush.png');
+
+        // Space background music
+        this.load.audio(
+            'space_bgm', 
+            './assets/space_bgm.wav'
+        );
     }
 
     create() {
+        // adds space background music
+        this.space_bgm = this.sound.add(
+            'space_bgm', 
+            {
+                volume: 0.3,
+                loop: true
+            }
+        );
+        // plays space background music
+        this.space_bgm.play();
+
         // adds space background 
         this.space_bg1 = this.add.tileSprite(
             0, 
