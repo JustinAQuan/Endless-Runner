@@ -48,9 +48,9 @@ let game = new Phaser.Game(config);
 let gameOptions = {
     platformStartSpeed: 350,
     spawnRange: [500, 600],
-    playerGravity: 900,
-    jumpForce: 400,
-    jumps: 1
+    playerGravity: 400,
+    jumpForce: 300,
+    jumps: 2
 }
 let back_speed = 1;
 let mid_speed = 2;

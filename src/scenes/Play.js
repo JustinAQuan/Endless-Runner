@@ -10,19 +10,19 @@ class Play extends Phaser.Scene {
 
         // Background
         this.load.image(
-            'space_bg1', 
+            'space_bg1',
             './assets/space_bg1.png'
         );
         this.load.image(
-            'space_bg2', 
+            'space_bg2',
             './assets/space_bg2.png'
         );
         this.load.image(
-            'space_bg3', 
+            'space_bg3',
             './assets/space_bg3.png'
         );
         this.load.image(
-            'space_bg4', 
+            'space_bg4',
             './assets/space_bg4.png'
         );
 
@@ -35,7 +35,7 @@ class Play extends Phaser.Scene {
 
         // Space background music
         this.load.audio(
-            'space_bgm', 
+            'space_bgm',
             './assets/space_bgm.wav'
         );
     }
@@ -43,8 +43,7 @@ class Play extends Phaser.Scene {
     create() {
         // adds space background music
         this.space_bgm = this.sound.add(
-            'space_bgm', 
-            {
+            'space_bgm', {
                 volume: 0.3,
                 loop: true
             }
@@ -54,24 +53,24 @@ class Play extends Phaser.Scene {
 
         // adds space background 
         this.space_bg1 = this.add.tileSprite(
-            0, 
-            0, 
+            0,
+            0,
             960,
             540,
             'space_bg1'
         ).setOrigin(0, 0);
 
         this.space_bg2 = this.add.tileSprite(
-            0, 
-            0, 
+            0,
+            0,
             960,
             540,
             'space_bg2'
         ).setOrigin(0, 0);
 
         this.space_bg3 = this.add.tileSprite(
-            0, 
-            0, 
+            0,
+            0,
             960,
             540,
             'space_bg3'
@@ -79,18 +78,18 @@ class Play extends Phaser.Scene {
 
         // group with all active bushes
         this.bushGroup = this.add.group({
- 
+
             // once a bush is removed, it's added to the pool
-            removeCallback: function(bush){
+            removeCallback: function(bush) {
                 bush.scene.bushPool.add(bush)
             }
         });
- 
+
         // pool
         this.bushPool = this.add.group({
- 
+
             // once a bush is removed from the pool, it's added to the active bush group
-            removeCallback: function(bush){
+            removeCallback: function(bush) {
                 bush.scene.bushGroup.add(bush)
             }
         });
@@ -109,13 +108,13 @@ class Play extends Phaser.Scene {
         // *** doesn't work as a floor on its own, 
         // might just have to resize image and place it at 0, game.config.height - game.config.height / 5  instead of 0, 0 
         this.space_bg4 = this.add.tileSprite(
-            0, 
-            0, 
+            0,
+            0,
             960,
             540,
             'space_bg4'
         ).setOrigin(0, 0);
-        
+
         // adds player sprite
         this.Player = this.physics.add.sprite(game.config.width / 5, game.config.height - game.config.height / 3, 'Player');
         this.Player.body.setGravityY(gameOptions.playerGravity);
@@ -133,17 +132,16 @@ class Play extends Phaser.Scene {
     }
 
     // the core of the script: bush are added from the pool or created on the fly
-    addbush(bushWidth, posX){
+    addbush(bushWidth, posX) {
         let bush;
-        if(this.bushPool.getLength()){
+        if (this.bushPool.getLength()) {
             bush = this.bushPool.getFirst();
             bush.x = posX;
             bush.active = true;
             bush.visible = true;
             this.bushPool.remove(bush);
-        }
-        else{
-            bush = this.physics.add.sprite(posX, game.config.height * 0.75, 'Bush');
+        } else {
+            bush = this.physics.add.sprite(posX, game.config.height * this.getRandomArbitrary(0.25, 0.75), 'Bush');
             bush.setImmovable(true);
             bush.setVelocityX(gameOptions.platformStartSpeed * -1);
             this.bushGroup.add(bush);
@@ -151,6 +149,16 @@ class Play extends Phaser.Scene {
 
         bush.displayWidth = bushWidth;
         this.nextbushDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
+    }
+
+    getRandomIntInclusive(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+    }
+
+    getRandomArbitrary(min, max) {
+        return Math.random() * (max - min + 1) + min;
     }
 
     update() {
@@ -163,51 +171,51 @@ class Play extends Phaser.Scene {
 
         this.playerGrounded = this.Player.body.touching.down;
 
-        if(this.playerGrounded){
+        if (this.playerGrounded) {
             this.jumping = false;
             this.numJumps = gameOptions.jumps;
         }
 
-        if(Phaser.Input.Keyboard.DownDuration(this.cursors.up, 200) && this.numJumps > 0){
+        if (Phaser.Input.Keyboard.DownDuration(this.cursors.up, 200) && this.numJumps > 0) {
             this.Player.body.setVelocityY(gameOptions.jumpForce * -1);
             this.jumping = true;
         }
 
-        if(this.jumping && Phaser.Input.Keyboard.UpDuration(this.cursors.up)){
+        if (this.jumping && Phaser.Input.Keyboard.UpDuration(this.cursors.up)) {
             this.numJumps--;
             this.jumping = false;
         }
 
-        if(this.cursors.down.isDown && this.Player.body.touching.down){
+        if (this.cursors.down.isDown && this.Player.body.touching.down) {
             this.Player.setTexture('Sliding');
-        }
-        else if(this.cursors.down.isDown && !this.Player.body.touching.down){
+        } else if (this.cursors.down.isDown && !this.Player.body.touching.down) {
             this.Player.setTexture('Player');
-            this.Player.body.setGravityY(gameOptions.playerGravity*2);
-        }
-        else{
+            this.Player.body.setGravityY(gameOptions.playerGravity * 2);
+        } else {
             this.Player.setTexture('Player');
             this.Player.body.setGravityY(gameOptions.playerGravity);
         }
 
-        if(this.isGameOver){
+        if (this.isGameOver) {
             this.scene.start('gameOverScene');
         }
 
         // recycling bush
         let minDistance = game.config.width;
-        this.bushGroup.getChildren().forEach(function(bush){
+        this.bushGroup.getChildren().forEach(function(bush) {
             let bushDistance = game.config.width - bush.x - bush.displayWidth / 2;
             minDistance = Math.min(minDistance, bushDistance);
-            if(bush.x < - bush.displayWidth / 2){
+            if (bush.x < -bush.displayWidth / 2) {
                 this.bushGroup.killAndHide(bush);
                 this.bushGroup.remove(bush);
             }
         }, this);
- 
+
         // adding new bush
-        if(minDistance > this.nextbushDistance){
-            this.addbush(64, game.config.width + 32);
+        if (minDistance > this.nextbushDistance) {
+            var swidth = this.getRandomIntInclusive(64, 32);
+            var posx = this.getRandomIntInclusive(64, 32);
+            this.addbush(swidth, game.config.width + posx);
         }
     }
 }
