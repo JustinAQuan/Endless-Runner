@@ -38,6 +38,19 @@ class Play extends Phaser.Scene {
             'space_bgm', 
             './assets/space_bgm.wav'
         );
+
+        // jump sfx
+        this.load.audio(
+            'jump_sfx', 
+            './assets/jump_sfx.wav'
+        );
+
+        // game over sfx
+        this.load.audio(
+            'game_over_sfx', 
+            './assets/game_over_sfx.wav'
+        );
+
     }
 
     create() {
@@ -45,7 +58,7 @@ class Play extends Phaser.Scene {
         this.space_bgm = this.sound.add(
             'space_bgm', 
             {
-                volume: 0.3,
+                volume: 1,
                 loop: true
             }
         );
@@ -160,6 +173,7 @@ class Play extends Phaser.Scene {
 
         if(Phaser.Input.Keyboard.DownDuration(this.cursors.up, 200) && this.numJumps > 0){
             this.Player.body.setVelocityY(gameOptions.jumpForce * -1);
+            this.sound.play("jump_sfx");
             this.jumping = true;
         }
 
@@ -182,6 +196,7 @@ class Play extends Phaser.Scene {
 
         if(this.isGameOver){
             this.space_bgm.stop();
+            this.sound.play("game_over_sfx");
             this.scene.start('gameOverScene');
         }
 
