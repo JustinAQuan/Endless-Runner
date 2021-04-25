@@ -139,6 +139,7 @@ class Play extends Phaser.Scene {
             bush.x = posX;
             bush.active = true;
             bush.visible = true;
+            bush.y = game.config.height * this.getRandomArbitrary(0.25, 0.75)
             this.bushPool.remove(bush);
         } else {
             bush = this.physics.add.sprite(posX, game.config.height * this.getRandomArbitrary(0.25, 0.75), 'Bush');
