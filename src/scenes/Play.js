@@ -27,7 +27,7 @@ class Play extends Phaser.Scene {
         );
 
         // Floor
-        this.load.image('Floor', './assets/floor.png');
+        //this.load.image('Floor', './assets/floor.png');
 
         // Obstacles
         this.load.image('Branch', './assets/branch.png');
@@ -38,16 +38,30 @@ class Play extends Phaser.Scene {
             'space_bgm',
             './assets/space_bgm.wav'
         );
+
+        // jump sfx
+        this.load.audio(
+            'jump_sfx',
+            './assets/jump_sfx.wav'
+        );
+
+        // game over sfx
+        this.load.audio(
+            'game_over_sfx',
+            './assets/game_over_sfx.wav'
+        );
+
     }
 
     create() {
         // adds space background music
         this.space_bgm = this.sound.add(
             'space_bgm', {
-                volume: 0.3,
+                volume: 1,
                 loop: true
             }
         );
+
         // plays space background music
         this.space_bgm.play();
 
@@ -99,21 +113,11 @@ class Play extends Phaser.Scene {
         this.addbush(64, game.config.width * 1.5);
 
 
-        // adds floor
-        this.floor = this.add.tileSprite(0, game.config.height - game.config.height / 5, game.config.width, game.config.height / 5, 'Floor').setOrigin(0, 0);
+        // adds space floor
+        this.floor = this.add.tileSprite(0, game.config.height - game.config.height / 5, game.config.width, game.config.height / 5, 'space_bg4').setOrigin(0, 0);
         this.physics.add.existing(this.floor);
         this.floor.body.setImmovable(true);
 
-        // adds space floor 
-        // *** doesn't work as a floor on its own, 
-        // might just have to resize image and place it at 0, game.config.height - game.config.height / 5  instead of 0, 0 
-        this.space_bg4 = this.add.tileSprite(
-            0,
-            0,
-            960,
-            540,
-            'space_bg4'
-        ).setOrigin(0, 0);
 
         // adds player sprite
         this.Player = this.physics.add.sprite(game.config.width / 5, game.config.height - game.config.height / 3, 'Player');
@@ -163,12 +167,11 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        this.floor.tilePositionX += 2;
         // space parallax 
         this.space_bg1.tilePositionX += back_speed;
         this.space_bg2.tilePositionX += mid_speed;
         this.space_bg3.tilePositionX += fore_speed;
-        this.space_bg4.tilePositionX += ground_speed;
+        this.floor.tilePositionX += ground_speed;
 
         this.playerGrounded = this.Player.body.touching.down;
 
@@ -199,6 +202,8 @@ class Play extends Phaser.Scene {
         }
 
         if (this.isGameOver) {
+            this.space_bgm.stop();
+            this.sound.play("game_over_sfx");
             this.scene.start('gameOverScene');
         }
 
