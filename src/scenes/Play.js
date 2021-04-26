@@ -177,8 +177,9 @@ class Play extends Phaser.Scene {
             this.numJumps = gameOptions.jumps;
         }
 
-        if (Phaser.Input.Keyboard.DownDuration(this.cursors.up, 200) && this.numJumps > 0) {
+        if (Phaser.Input.Keyboard.DownDuration(this.cursors.up, 200) && this.numJumps > 0 && this.jumping == false) {
             this.Player.body.setVelocityY(gameOptions.jumpForce * -1);
+            this.sound.play("jump_sfx");
             this.jumping = true;
         }
 
