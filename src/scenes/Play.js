@@ -136,6 +136,7 @@ class Play extends Phaser.Scene {
 
         // initialize score
         scene.p1Score = 0;
+        scene.scoreMulti = 1;
 
         // adds distance counter
         let scoreConfig = {
@@ -150,7 +151,7 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        this.p1Score++;
+        this.p1Score += this.scoreMulti;
         this.score.text = Number((this.p1Score / 10).toFixed(0)) + 'm';
 
         // space parallax 
@@ -167,7 +168,9 @@ class Play extends Phaser.Scene {
                 ground_speed += 1;
             }
 
-            gameOptions.obstacleSpeed += 50;
+            this.scoreMulti += 0.5;
+
+            gameOptions.obstacleSpeed += 100;
             this.astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
 
@@ -217,13 +220,15 @@ class Play extends Phaser.Scene {
             fore_speed = 3;
             ground_speed = 4;
 
+            this.scoreMulti = 1;
+
             gameOptions.obstacleSpeed = 350;
         }
 
         let randomNum = Phaser.Math.Between(0, 1500);
 
         // create astroids every 15 meters
-        if(randomNum % 157 == 0 && this.astroidGroup.getLength() < 5){
+        if(randomNum % 157 == 0 && this.astroidGroup.getLength() < 3){
             this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(300, game.config.height - game.config.height / 5));
         }
 

@@ -3,6 +3,7 @@ Collaborator Names:
     Justin Quan
     Michelle Lytle
     Thea Knasiak
+    Divyansh Khare
 
 Game Title:
     Untitled
