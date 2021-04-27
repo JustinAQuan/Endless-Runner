@@ -11,6 +11,9 @@ class GameOver extends Phaser.Scene {
     create() {
         this.add.text(game.config.width / 2, game.config.height / 3, 'GAME OVER').setOrigin(0.5, 0);
 
+        // displays score for this round 
+        this.add.text(game.config.width / 2, game.config.height / 2 - 30, 'Score: ' + this.score + 'm').setOrigin(0.5, 0);
+
         if(this.score > this.highscore){
             this.highscore = this.score;
 
