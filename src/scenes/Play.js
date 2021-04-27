@@ -3,6 +3,10 @@ class Play extends Phaser.Scene {
         super("playScene");
     }
 
+    init(data) {
+        this.highscore = data.highscore;
+    }
+
     preload() {
         // Player images
         this.load.image('Player', './assets/player.png');
@@ -97,42 +101,41 @@ class Play extends Phaser.Scene {
 
 
         // adds astroid group
-        let astroidGroup = scene.physics.add.group();
+        scene.astroidGroup = scene.physics.add.group();
         
-        function makeAstroid(x, y){
-            let astroid = scene.add.sprite(x, y, 'astroid');
-            astroidGroup.add(astroid);
-            astroid.body.setImmovable();
+        scene.makeAstroidFunc = function makeAstroid(x, y){
+            scene.astroid = scene.add.sprite(x, y, 'astroid');
+            scene.astroidGroup.add(scene.astroid);
+            scene.astroid.body.setImmovable();
+            scene.astroid.body.setCircle(25);
+            scene.astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
-
-        astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
-
         
         // adds space floor
-        this.floor = this.add.tileSprite(0, game.config.height - game.config.height / 5, game.config.width, game.config.height / 5, 'space_bg4').setOrigin(0, 0);
-        this.physics.add.existing(this.floor);
-        this.floor.body.setImmovable(true);
+        scene.floor = scene.add.tileSprite(0, game.config.height - game.config.height / 5, game.config.width, game.config.height / 5, 'space_bg4').setOrigin(0, 0);
+        scene.physics.add.existing(scene.floor);
+        scene.floor.body.setImmovable(true);
     
         
         // adds player sprite
-        this.Player = this.physics.add.sprite(game.config.width / 5, game.config.height - game.config.height / 3, 'Player').setOrigin(0.5, 1);
-        this.Player.body.setGravityY(gameOptions.playerGravity);
-        this.Player.setSize(74, 74);
+        scene.Player = scene.physics.add.sprite(game.config.width / 5, game.config.height - game.config.height / 3, 'Player').setOrigin(0.5, 1);
+        scene.Player.body.setGravityY(gameOptions.playerGravity);
+        scene.Player.setSize(74, 74);
 
         // setting up cursor keys
-        this.cursors = this.input.keyboard.createCursorKeys();
+        scene.cursors = scene.input.keyboard.createCursorKeys();
 
         // allows the player to "walk" on the floor
-        this.physics.add.collider(this.Player, this.floor);
+        scene.physics.add.collider(scene.Player, scene.floor);
 
-        this.isGameOver = false;
-        this.physics.add.collider(this.Player, this.bushGroup, () => {
-            this.isGameOver = true;
+        scene.isGameOver = false;
+        scene.physics.add.collider(scene.Player, scene.astroidGroup, () => {
+            scene.isGameOver = true;
         });
 
 
         // initialize score
-        this.p1Score = 0;
+        scene.p1Score = 0;
 
         // adds distance counter
         let scoreConfig = {
@@ -143,18 +146,30 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
 
-        this.score = this.add.text(game.config.width - 150, 50, this.p1Score, scoreConfig);
+        scene.score = scene.add.text(game.config.width - 150, 50, scene.p1Score + 'm', scoreConfig);
     }
 
     update() {
         this.p1Score++;
-        this.score.text = Number((this.p1Score / 10).toFixed(0));
+        this.score.text = Number((this.p1Score / 10).toFixed(0)) + 'm';
 
         // space parallax 
         this.space_bg1.tilePositionX += back_speed;
         this.space_bg2.tilePositionX += mid_speed;
         this.space_bg3.tilePositionX += fore_speed;
         this.floor.tilePositionX += ground_speed;
+
+        if((this.p1Score / 10) % 250 == 0){
+            if(fore_speed < 6){
+                back_speed += 1;
+                mid_speed += 1;
+                fore_speed += 1;
+                ground_speed += 1;
+            }
+
+            gameOptions.obstacleSpeed += 50;
+            this.astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+        }
 
         this.playerGrounded = this.Player.body.touching.down;
 
@@ -163,8 +178,10 @@ class Play extends Phaser.Scene {
             this.numJumps = gameOptions.jumps;
         }
 
-        if(this.playerGrounded && Phaser.Input.Keyboard.DownDuration(this.cursors.up)){
+        if(Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.numJumps > 0){
             this.sound.play("jump_sfx");
+            this.Player.setTexture('Sliding');
+            this.Player.setSize(95, 51);
         }
 
         if(Phaser.Input.Keyboard.DownDuration(this.cursors.up, 200) && this.numJumps > 0){
@@ -182,21 +199,40 @@ class Play extends Phaser.Scene {
             this.Player.setSize(95, 51);
         }
         else if(this.cursors.down.isDown && !this.playerGrounded){
-            this.Player.setTexture('Player');
-            this.Player.setSize(74, 74);
             this.Player.body.setGravityY(gameOptions.playerGravity * 3);
         }
-        else{
+        else if(this.cursors.up.isUp && this.playerGrounded){
             this.Player.setTexture('Player');
-            this.Player.setSize(74, 74);
+            this.Player.setSize(70, 74);
+            this.Player.body.setGravityY(gameOptions.playerGravity);
         }
 
         if(this.isGameOver){
             this.space_bgm.stop();
             this.sound.play("game_over_sfx");
-            this.scene.start('gameOverScene');
+            this.scene.start('gameOverScene', {score: Number((this.p1Score / 10).toFixed(0)), highscore: this.highscore});
+
+            back_speed = 1;
+            mid_speed = 2;
+            fore_speed = 3;
+            ground_speed = 4;
+
+            gameOptions.obstacleSpeed = 350;
         }
 
-        
+        let randomNum = Phaser.Math.Between(0, 1500);
+
+        // create astroids every 15 meters
+        if(randomNum % 157 == 0 && this.astroidGroup.getLength() < 5){
+            this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(300, game.config.height - game.config.height / 5));
+        }
+
+        // destroys astroid if offscreen
+        this.astroidGroup.getChildren().forEach(function(astroid){
+            if(astroid.x < - astroid.displayWidth / 2){
+                this.astroidGroup.killAndHide(astroid);
+                this.astroidGroup.remove(astroid);
+            }
+        }, this);
     }
 }

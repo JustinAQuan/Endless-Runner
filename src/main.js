@@ -34,13 +34,13 @@ let config = {
     },
 
     // set scenes
-    scene: [Play, GameOver],
+    scene: [Menu, Play, GameOver],
 
     // adds physics
     physics: {
         default: "arcade",
         arcade: {
-            debug: true
+            debug: false
         }
     }
 };
