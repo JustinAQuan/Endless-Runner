@@ -228,8 +228,8 @@ class Play extends Phaser.Scene {
         let randomNum = Phaser.Math.Between(0, 1500);
 
         // create astroids every 15 meters
-        if(randomNum % 157 == 0 && this.astroidGroup.getLength() < 3){
-            this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(300, game.config.height - game.config.height / 5));
+        if(randomNum % 157 == 0 && this.astroidGroup.getLength() < 5){
+            this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height - game.config.height / 5));
         }
 
         // destroys astroid if offscreen
