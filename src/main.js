@@ -38,7 +38,10 @@ let config = {
 
     // adds physics
     physics: {
-        default: "arcade"
+        default: "arcade",
+        arcade: {
+            debug: true
+        }
     }
 };
 
@@ -46,11 +49,11 @@ let game = new Phaser.Game(config);
 
 // global game options
 let gameOptions = {
-    platformStartSpeed: 350,
+    obstacleSpeed: 350,
     spawnRange: [500, 600],
     playerGravity: 900,
     jumpForce: 400,
-    jumps: 1
+    jumps: 2
 }
 // parallax speeds 
 let back_speed = 1;

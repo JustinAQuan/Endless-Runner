@@ -8,6 +8,7 @@ class Play extends Phaser.Scene {
         this.load.image('Player', './assets/player.png');
         this.load.image('Sliding', './assets/player_slide.png');
 
+
         // Background
         this.load.image(
             'space_bg1', 
@@ -26,12 +27,10 @@ class Play extends Phaser.Scene {
             './assets/space_bg4.png'
         );
 
-        // Floor
-        //this.load.image('Floor', './assets/floor.png');
 
         // Obstacles
-        this.load.image('Branch', './assets/branch.png');
-        this.load.image('Bush', './assets/bush.png');
+        this.load.image('astroid', './assets/astroid.png');
+
 
         // Space background music
         this.load.audio(
@@ -39,11 +38,13 @@ class Play extends Phaser.Scene {
             './assets/space_bgm.wav'
         );
 
+
         // jump sfx
         this.load.audio(
             'jump_sfx', 
             './assets/jump_sfx.wav'
         );
+
 
         // game over sfx
         this.load.audio(
@@ -54,8 +55,11 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        // useful for some functions
+        let scene = this;
+
         // adds space background music
-        this.space_bgm = this.sound.add(
+        scene.space_bgm = scene.sound.add(
             'space_bgm', 
             {
                 volume: 1,
@@ -64,10 +68,10 @@ class Play extends Phaser.Scene {
         );
 
         // plays space background music
-        this.space_bgm.play();
+        scene.space_bgm.play();
     
         // adds space background 
-        this.space_bg1 = this.add.tileSprite(
+        scene.space_bg1 = scene.add.tileSprite(
             0, 
             0, 
             960,
@@ -75,7 +79,7 @@ class Play extends Phaser.Scene {
             'space_bg1'
         ).setOrigin(0, 0);
 
-        this.space_bg2 = this.add.tileSprite(
+        scene.space_bg2 = scene.add.tileSprite(
             0, 
             0, 
             960,
@@ -83,7 +87,7 @@ class Play extends Phaser.Scene {
             'space_bg2'
         ).setOrigin(0, 0);
 
-        this.space_bg3 = this.add.tileSprite(
+        scene.space_bg3 = scene.add.tileSprite(
             0, 
             0, 
             960,
@@ -91,29 +95,19 @@ class Play extends Phaser.Scene {
             'space_bg3'
         ).setOrigin(0, 0);
 
-        // group with all active bushes
-        this.bushGroup = this.add.group({
- 
-            // once a bush is removed, it's added to the pool
-            removeCallback: function(bush){
-                bush.scene.bushPool.add(bush)
-            }
-        });
- 
-        // pool
-        this.bushPool = this.add.group({
- 
-            // once a bush is removed from the pool, it's added to the active bush group
-            removeCallback: function(bush){
-                bush.scene.bushGroup.add(bush)
-            }
-        });
 
+        // adds astroid group
+        let astroidGroup = scene.physics.add.group();
+        
+        function makeAstroid(x, y){
+            let astroid = scene.add.sprite(x, y, 'astroid');
+            astroidGroup.add(astroid);
+            astroid.body.setImmovable();
+        }
 
-        // adds the first bush
-        this.addbush(64, game.config.width * 1.5);
+        astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
 
-
+        
         // adds space floor
         this.floor = this.add.tileSprite(0, game.config.height - game.config.height / 5, game.config.width, game.config.height / 5, 'space_bg4').setOrigin(0, 0);
         this.physics.add.existing(this.floor);
@@ -121,8 +115,9 @@ class Play extends Phaser.Scene {
     
         
         // adds player sprite
-        this.Player = this.physics.add.sprite(game.config.width / 5, game.config.height - game.config.height / 3, 'Player');
+        this.Player = this.physics.add.sprite(game.config.width / 5, game.config.height - game.config.height / 3, 'Player').setOrigin(0.5, 1);
         this.Player.body.setGravityY(gameOptions.playerGravity);
+        this.Player.setSize(74, 74);
 
         // setting up cursor keys
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -134,30 +129,27 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.Player, this.bushGroup, () => {
             this.isGameOver = true;
         });
-    }
 
-    // the core of the script: bush are added from the pool or created on the fly
-    addbush(bushWidth, posX){
-        let bush;
-        if(this.bushPool.getLength()){
-            bush = this.bushPool.getFirst();
-            bush.x = posX;
-            bush.active = true;
-            bush.visible = true;
-            this.bushPool.remove(bush);
-        }
-        else{
-            bush = this.physics.add.sprite(posX, game.config.height * 0.75, 'Bush');
-            bush.setImmovable(true);
-            bush.setVelocityX(gameOptions.platformStartSpeed * -1);
-            this.bushGroup.add(bush);
+
+        // initialize score
+        this.p1Score = 0;
+
+        // adds distance counter
+        let scoreConfig = {
+            fontFamily: 'Impact, fantasy',
+            fontSize: '30px',
+            color: '#FFFFFF',
+            align: 'right',
+            fixedWidth: 100
         }
 
-        bush.displayWidth = bushWidth;
-        this.nextbushDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
+        this.score = this.add.text(game.config.width - 150, 50, this.p1Score, scoreConfig);
     }
 
     update() {
+        this.p1Score++;
+        this.score.text = Number((this.p1Score / 10).toFixed(0));
+
         // space parallax 
         this.space_bg1.tilePositionX += back_speed;
         this.space_bg2.tilePositionX += mid_speed;
@@ -171,9 +163,12 @@ class Play extends Phaser.Scene {
             this.numJumps = gameOptions.jumps;
         }
 
+        if(this.playerGrounded && Phaser.Input.Keyboard.DownDuration(this.cursors.up)){
+            this.sound.play("jump_sfx");
+        }
+
         if(Phaser.Input.Keyboard.DownDuration(this.cursors.up, 200) && this.numJumps > 0){
             this.Player.body.setVelocityY(gameOptions.jumpForce * -1);
-            this.sound.play("jump_sfx");
             this.jumping = true;
         }
 
@@ -182,16 +177,18 @@ class Play extends Phaser.Scene {
             this.jumping = false;
         }
 
-        if(this.cursors.down.isDown && this.Player.body.touching.down){
+        if(this.cursors.down.isDown && this.playerGrounded){
             this.Player.setTexture('Sliding');
+            this.Player.setSize(95, 51);
         }
-        else if(this.cursors.down.isDown && !this.Player.body.touching.down){
+        else if(this.cursors.down.isDown && !this.playerGrounded){
             this.Player.setTexture('Player');
-            this.Player.body.setGravityY(gameOptions.playerGravity*2);
+            this.Player.setSize(74, 74);
+            this.Player.body.setGravityY(gameOptions.playerGravity * 3);
         }
         else{
             this.Player.setTexture('Player');
-            this.Player.body.setGravityY(gameOptions.playerGravity);
+            this.Player.setSize(74, 74);
         }
 
         if(this.isGameOver){
@@ -200,20 +197,6 @@ class Play extends Phaser.Scene {
             this.scene.start('gameOverScene');
         }
 
-        // recycling bush
-        let minDistance = game.config.width;
-        this.bushGroup.getChildren().forEach(function(bush){
-            let bushDistance = game.config.width - bush.x - bush.displayWidth / 2;
-            minDistance = Math.min(minDistance, bushDistance);
-            if(bush.x < - bush.displayWidth / 2){
-                this.bushGroup.killAndHide(bush);
-                this.bushGroup.remove(bush);
-            }
-        }, this);
- 
-        // adding new bush
-        if(minDistance > this.nextbushDistance){
-            this.addbush(64, game.config.width + 32);
-        }
+        
     }
 }
