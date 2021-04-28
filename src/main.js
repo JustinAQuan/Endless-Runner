@@ -6,7 +6,7 @@ Collaborator Names:
     Divyansh Khare
 
 Game Title:
-    Untitled
+    
 
 Date Completed:
     TBD

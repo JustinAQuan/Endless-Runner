@@ -12,6 +12,9 @@ class Play extends Phaser.Scene {
         this.load.image('Player', './assets/player.png');
         this.load.image('Sliding', './assets/player_slide.png');
 
+        // texture atlas
+        this.load.atlas('corgi_anims', './assets/corgi_anims.png', './assets/corgi_anims.json');
+
 
         // Background
         this.load.image(
@@ -117,10 +120,19 @@ class Play extends Phaser.Scene {
         scene.floor.body.setImmovable(true);
     
         
+        // adds player animation
+        this.anims.create({
+            key: 'player',
+            frames: this.anims.generateFrameNames('corgi_anims', {prefix: 'corgi', end: 3, zeroPad: 2}),
+            repeat: -1,
+            frameRate: 12
+        });
+
         // adds player sprite
         scene.Player = scene.physics.add.sprite(game.config.width / 5, game.config.height - game.config.height / 3, 'Player').setOrigin(0.5, 1);
+        scene.Player.play('player');
         scene.Player.body.setGravityY(gameOptions.playerGravity);
-        scene.Player.setSize(74, 74);
+        scene.Player.setSize(89, 77);
 
         // setting up cursor keys
         scene.cursors = scene.input.keyboard.createCursorKeys();
@@ -152,7 +164,7 @@ class Play extends Phaser.Scene {
 
     update() {
         this.p1Score += this.scoreMulti;
-        this.score.text = Number((this.p1Score / 10).toFixed(0)) + 'm';
+        this.score.text = Number((this.p1Score / 15).toFixed(0)) + 'm';
 
         // space parallax 
         this.space_bg1.tilePositionX += back_speed;
@@ -160,7 +172,7 @@ class Play extends Phaser.Scene {
         this.space_bg3.tilePositionX += fore_speed;
         this.floor.tilePositionX += ground_speed;
 
-        if((this.p1Score / 10) % 250 == 0){
+        if((this.p1Score / 15) % 250 == 0){
             if(fore_speed < 6){
                 back_speed += 1;
                 mid_speed += 1;
@@ -183,8 +195,9 @@ class Play extends Phaser.Scene {
 
         if(Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.numJumps > 0){
             this.sound.play("jump_sfx");
+            this.Player.stop();
             this.Player.setTexture('Sliding');
-            this.Player.setSize(95, 51);
+            this.Player.setSize(89, 55);
         }
 
         if(Phaser.Input.Keyboard.DownDuration(this.cursors.up, 200) && this.numJumps > 0){
@@ -198,15 +211,16 @@ class Play extends Phaser.Scene {
         }
 
         if(this.cursors.down.isDown && this.playerGrounded){
+            this.Player.stop();
             this.Player.setTexture('Sliding');
-            this.Player.setSize(95, 51);
+            this.Player.setSize(89, 55);
         }
         else if(this.cursors.down.isDown && !this.playerGrounded){
             this.Player.body.setGravityY(gameOptions.playerGravity * 3);
         }
-        else if(this.cursors.up.isUp && this.playerGrounded){
-            this.Player.setTexture('Player');
-            this.Player.setSize(70, 74);
+        else if(this.cursors.up.isUp && this.playerGrounded && !this.Player.anims.isPlaying){
+            this.Player.play('player');
+            this.Player.setSize(89, 77);
             this.Player.body.setGravityY(gameOptions.playerGravity);
         }
 
@@ -229,7 +243,10 @@ class Play extends Phaser.Scene {
 
         // create astroids every 15 meters
         if(randomNum % 157 == 0 && this.astroidGroup.getLength() < 5){
-            this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height - game.config.height / 5));
+            this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height / 2));
+        }
+        if(randomNum % 139 == 0 && this.astroidGroup.getLength() < 4){
+            this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 5));
         }
 
         // destroys astroid if offscreen

@@ -1,0 +1,44 @@
+{"frames": [
+
+{
+	"filename": "corgi00",
+	"frame": {"x":0,"y":0,"w":89,"h":73},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":89,"h":73},
+	"sourceSize": {"w":89,"h":73}
+},
+{
+	"filename": "corgi01",
+	"frame": {"x":0,"y":73,"w":89,"h":77},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":89,"h":77},
+	"sourceSize": {"w":89,"h":77}
+},
+{
+	"filename": "corgi02",
+	"frame": {"x":0,"y":150,"w":89,"h":77},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":89,"h":77},
+	"sourceSize": {"w":89,"h":77}
+},
+{
+	"filename": "corgi03",
+	"frame": {"x":0,"y":227,"w":89,"h":75},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":89,"h":75},
+	"sourceSize": {"w":89,"h":75}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "corgi_anims.png",
+	"format": "RGBA8888",
+	"size": {"w":89,"h":302},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:1db90b55b24b84a9063a027178da5ab7:275bd4d9a2a63d0d3918dbc6a5495f48:7d27d1b75b008dd37ffdadc785d0efe4$"
+}
+}
