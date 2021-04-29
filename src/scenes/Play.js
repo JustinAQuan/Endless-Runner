@@ -9,7 +9,6 @@ class Play extends Phaser.Scene {
 
     preload() {
         // Player images
-        this.load.image('Player', './assets/player.png');
         this.load.image('Sliding', './assets/player_slide.png');
 
         // texture atlas
@@ -33,6 +32,11 @@ class Play extends Phaser.Scene {
             'space_bg4', 
             './assets/space_bg4.png'
         );
+
+        this.load.image('earth_floor', './assets/earth_bg4.png');
+        this.load.image('earth_bg1', './assets/earth_bg1.png');
+        this.load.image('earth_bg2', './assets/earth_bg2.png');
+        this.load.image('earth_bg3', './assets/earth_bg3.png');
 
 
         // Obstacles
@@ -79,7 +83,7 @@ class Play extends Phaser.Scene {
     
         // adds space background 
         scene.space_bg1 = scene.add.tileSprite(
-            0, 
+            game.config.width, 
             0, 
             960,
             540,
@@ -87,7 +91,7 @@ class Play extends Phaser.Scene {
         ).setOrigin(0, 0);
 
         scene.space_bg2 = scene.add.tileSprite(
-            0, 
+            game.config.width, 
             0, 
             960,
             540,
@@ -95,12 +99,62 @@ class Play extends Phaser.Scene {
         ).setOrigin(0, 0);
 
         scene.space_bg3 = scene.add.tileSprite(
-            0, 
+            game.config.width, 
             0, 
             960,
             540,
             'space_bg3'
         ).setOrigin(0, 0);
+
+        // adds earth background 
+        scene.earth_bg3 = scene.add.tileSprite(
+            0, 
+            0, 
+            960,
+            540,
+            'earth_bg3'
+        ).setOrigin(0, 0);
+
+        scene.earth_bg2 = scene.add.tileSprite(
+            0, 
+            0, 
+            960,
+            540,
+            'earth_bg2'
+        ).setOrigin(0, 0);
+
+        scene.earth_bg1 = scene.add.tileSprite(
+            0, 
+            0, 
+            960,
+            540,
+            'earth_bg1'
+        ).setOrigin(0, 0);
+
+         // adds earth floor
+         scene.earthFloor = scene.add.tileSprite(
+            0,
+            game.config.height - game.config.height / 5,
+            game.config.width,
+            game.config.height / 5,
+            'earth_floor'
+        ).setOrigin(0, 0);
+
+        // adds space floor
+        scene.spaceFloor = scene.add.tileSprite(
+            game.config.width,
+            game.config.height - game.config.height / 5,
+            game.config.width,
+            game.config.height / 5,
+            'space_bg4'
+        ).setOrigin(0, 0);
+
+
+        scene.physics.add.existing(scene.earthFloor);
+        scene.earthFloor.body.setImmovable(true);
+        scene.physics.add.existing(scene.spaceFloor);
+        scene.spaceFloor.body.setImmovable(true);
+
 
 
         // adds astroid group
@@ -113,11 +167,6 @@ class Play extends Phaser.Scene {
             scene.astroid.body.setCircle(25);
             scene.astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
-        
-        // adds space floor
-        scene.floor = scene.add.tileSprite(0, game.config.height - game.config.height / 5, game.config.width, game.config.height / 5, 'space_bg4').setOrigin(0, 0);
-        scene.physics.add.existing(scene.floor);
-        scene.floor.body.setImmovable(true);
     
         
         // adds player animation
@@ -138,7 +187,8 @@ class Play extends Phaser.Scene {
         scene.cursors = scene.input.keyboard.createCursorKeys();
 
         // allows the player to "walk" on the floor
-        scene.physics.add.collider(scene.Player, scene.floor);
+        scene.physics.add.collider(scene.Player, scene.earthFloor);
+        scene.physics.add.collider(scene.Player, scene.spaceFloor);
 
         scene.isGameOver = false;
         scene.physics.add.collider(scene.Player, scene.astroidGroup, () => {
@@ -166,18 +216,24 @@ class Play extends Phaser.Scene {
         this.p1Score += this.scoreMulti;
         this.score.text = Number((this.p1Score / 15).toFixed(0)) + 'm';
 
+        // earth parallax 
+        this.earth_bg1.tilePositionX += back_speed;
+        this.earth_bg2.tilePositionX += mid_speed;
+        this.earth_bg3.tilePositionX += fore_speed;
+        this.earthFloor.tilePositionX += ground_speed;
+
         // space parallax 
         this.space_bg1.tilePositionX += back_speed;
         this.space_bg2.tilePositionX += mid_speed;
         this.space_bg3.tilePositionX += fore_speed;
-        this.floor.tilePositionX += ground_speed;
+        this.spaceFloor.tilePositionX += ground_speed;
 
         if((this.p1Score / 15) % 250 == 0){
             if(fore_speed < 6){
-                back_speed += 1;
-                mid_speed += 1;
-                fore_speed += 1;
-                ground_speed += 1;
+                back_speed += 0.75;
+                mid_speed += 0.75;
+                fore_speed += 0.5;
+                ground_speed += 0.5;
             }
 
             this.scoreMulti += 0.5;

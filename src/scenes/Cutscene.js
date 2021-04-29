@@ -9,6 +9,9 @@ class Cutscene extends Phaser.Scene {
         this.load.image('earth_bg1', './assets/earth_bg1.png');
         this.load.image('earth_bg2', './assets/earth_bg2.png');
         this.load.image('earth_bg3', './assets/earth_bg3.png');
+
+        // load squirrel
+        this.load.image('squirrel', './assets/Squirrel_final.png');
     }
 
     create() {
@@ -39,16 +42,30 @@ class Cutscene extends Phaser.Scene {
             'earth_bg1'
         ).setOrigin(0, 0);
 
-         // adds space floor
+         // adds Earth floor
          scene.floor = scene.add.tileSprite(
             0,
             game.config.height - game.config.height / 5,
-            game.config.width, game.config.height / 5,
+            game.config.width,
+            game.config.height / 5,
             'earth_floor'
         ).setOrigin(0, 0);
 
+        scene.squirrel = scene.physics.add.sprite(
+            game.config.width / 2,
+            game.config.height - game.config.height / 5,
+            'squirrel'
+        ).setOrigin(0.5, 1);
+
+        this.time.delayedCall(2000, () => {
+            scene.squirrel.setVelocityX(200);
+        }, null, this);
+
         this.time.delayedCall(5000, () => {
-            this.scene.start('playScene', {highscore: 0});
+            this.add.text(game.config.width / 2, game.config.height / 1.5, 'Press any key to start').setOrigin(0.5);
+            this.input.keyboard.on('keydown', () => {
+                this.scene.start('playScene', {highscore: 0});
+            }, this)
         }, null, this);
     }
 }

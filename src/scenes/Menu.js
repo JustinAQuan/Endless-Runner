@@ -37,6 +37,7 @@ class Menu extends Phaser.Scene {
         ).setOrigin(0, 0);
 
         this.time.delayedCall(1000, () => {
+            this.menu_bgm.stop();
             this.scene.start('playCutscene');
         }, null, this);
     }
