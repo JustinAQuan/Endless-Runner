@@ -6,7 +6,7 @@ Collaborator Names:
     Divyansh Khare
 
 Game Title:
-    
+    Corgi Game Something
 
 Date Completed:
     TBD
@@ -35,7 +35,7 @@ let config = {
     },
 
     // set scenes
-    scene: [Menu, Play, GameOver],
+    scene: [Menu, Cutscene, Play, GameOver],
 
     // adds physics
     physics: {
