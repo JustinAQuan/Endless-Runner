@@ -36,8 +36,6 @@ class Menu extends Phaser.Scene {
             'corgiMenuArt'
         ).setOrigin(0, 0);
 
-        this.add.text(game.config.width / 2, game.config.height / 2, 'GAME MENU').setOrigin(0.5, 0);
-
         this.time.delayedCall(1000, () => {
             this.scene.start('playCutscene');
         }, null, this);
