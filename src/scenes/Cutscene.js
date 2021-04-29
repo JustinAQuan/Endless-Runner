@@ -47,8 +47,8 @@ class Cutscene extends Phaser.Scene {
             'earth_floor'
         ).setOrigin(0, 0);
 
-        // this.time.delayedCall(10000, () => {
-        //     this.scene.start('playScene', {highscore: 0});
-        // }, null, this);
+        this.time.delayedCall(5000, () => {
+            this.scene.start('playScene', {highscore: 0});
+        }, null, this);
     }
 }
