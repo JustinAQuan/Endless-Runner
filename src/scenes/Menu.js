@@ -20,8 +20,8 @@ class Menu extends Phaser.Scene {
 
         // menu image 
         this.load.image(
-            'corgiMenuArt', 
-            './assets/corgiMenuArt.png'
+            'menu_art', 
+            './assets/menu_art.png'
         );
         
     }
@@ -41,7 +41,7 @@ class Menu extends Phaser.Scene {
         this.corgiMenuArt = this.add.image(
             0, 
             0, 
-            'corgiMenuArt'
+            'menu_art'
         ).setOrigin(0, 0);
 
         // starts after pressing any key 
