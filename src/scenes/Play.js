@@ -8,39 +8,26 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
-        // Player images
+        // player images
         this.load.image('Sliding', './assets/player_slide.png');
 
         // texture atlas
         this.load.atlas('corgi_anims', './assets/corgi_anims.png', './assets/corgi_anims.json');
         this.load.atlas('meteor', './assets/meteor.png', './assets/meteor.json');
 
-
-        // Background
-        this.load.image(
-            'space_bg1', 
-            './assets/space_bg1.png'
-        );
-        this.load.image(
-            'space_bg2', 
-            './assets/space_bg2.png'
-        );
-        this.load.image(
-            'space_bg3', 
-            './assets/space_bg3.png'
-        );
-        this.load.image(
-            'space_bg4', 
-            './assets/space_bg4.png'
-        );
-
+        // earth backgrounds
         this.load.image('earth_floor', './assets/earth_bg4.png');
         this.load.image('earth_bg1', './assets/earth_bg1.png');
         this.load.image('earth_bg2', './assets/earth_bg2.png');
         this.load.image('earth_bg3', './assets/earth_bg3.png');
 
+        // space backgrounds 
+        this.load.image('space_bg1', './assets/space_bg1.png');
+        this.load.image('space_bg2', './assets/space_bg2.png');
+        this.load.image('space_bg3', './assets/space_bg3.png');
+        this.load.image('space_bg4', './assets/space_bg4.png');
 
-        // Obstacles
+        // obstacles
         this.load.image('astroid', './assets/astroid.png');
         this.load.image('bat', './assets/bat_frame1.png');
         this.load.image('cat1', './assets/cat1.png');
@@ -49,43 +36,23 @@ class Play extends Phaser.Scene {
         this.load.image('space_puppy', './assets/space_puppy_frame1.png');
         this.load.image('monolith_space', './assets/monolith_space.png');
 
-
-        // Space background music
-        this.load.audio(
-            'space_bgm', 
-            './assets/space_bgm.wav'
-        );
-
         // earth background music
-        this.load.audio(
-            'earth_bgm',
-            './assets/earth_bgm.wav'
-        );
+        this.load.audio('earth_bgm', './assets/earth_bgm.wav');
 
+        // space background music
+        this.load.audio('space_bgm', './assets/space_bgm.wav');
 
         // jump sfx
-        this.load.audio(
-            'jump_sfx', 
-            './assets/jump_sfx.wav'
-        );
-
+        this.load.audio('jump_sfx', './assets/jump_sfx.wav');
 
         // game over sfx
-        this.load.audio(
-            'game_over_sfx', 
-            './assets/game_over_sfx.wav'
-        );
+        this.load.audio('game_over_sfx', './assets/game_over_sfx.wav');
 
-        this.load.audio(
-            'teleport_earth_sfx',
-            './assets/teleport_earth_sfx.wav'
-        );
+        // teleport to earth sfx
+        this.load.audio('teleport_earth_sfx','./assets/teleport_earth_sfx.wav');
 
-        this.load.audio(
-            'teleport_space_sfx',
-            './assets/teleport_space_sfx.wav'
-        );
-
+        // teleport to space sfx
+        this.load.audio('teleport_space_sfx','./assets/teleport_space_sfx.wav');
     }
 
     create() {
@@ -93,26 +60,27 @@ class Play extends Phaser.Scene {
         let scene = this;
 
         if (isEarth) {
-           // adds earth background music
+           // adds earth bgm
             scene.earth_bgm = scene.sound.add(
                 'earth_bgm', 
                 {
-                    volume: 0.3,
+                    volume: 0.35,
                     loop: true
                 }
             );
-            // plays space background music
+            // plays earth bgm
             scene.earth_bgm.play(); 
-        } else {
-            // adds space background music
+        } 
+        else {
+            // adds space bgm
             scene.space_bgm = scene.sound.add(
                 'space_bgm', 
                 {
-                    volume: 0.3,
+                    volume: 1,
                     loop: true
                 }
             );
-            // plays space background music
+            // plays space bgm
             scene.space_bgm.play();
         }
 
@@ -188,13 +156,17 @@ class Play extends Phaser.Scene {
         }
 
         if (isEarth) {
+            // adds earth floor physics
             scene.physics.add.existing(scene.earthFloor);
             scene.earthFloor.body.setImmovable(true);
         }
         else {
+            // adds space floor physics 
             scene.physics.add.existing(scene.spaceFloor);
             scene.spaceFloor.body.setImmovable(true);
         }
+        
+        this.canTeleport = false; // whether player can teleport
 
         // creates meteor animation 
         // *** animation isn't playing, only uses first frame ***
@@ -294,7 +266,7 @@ class Play extends Phaser.Scene {
         scene.Player.play('player');
         scene.Player.setSize(89, 77);
        
-        // different gravity for earth and space
+        // creates different gravity for earth and space
         if (isEarth) {
             scene.Player.body.setGravityY(gameOptions.playerGravityEarth);
             // allows the player to "walk" on the floor
@@ -302,13 +274,16 @@ class Play extends Phaser.Scene {
         }
         else {
             scene.Player.body.setGravityY(gameOptions.playerGravitySpace);
+            // allows the player to "walk" on the floor
             scene.physics.add.collider(scene.Player, scene.spaceFloor);
         }
 
         // setting up cursor keys
         scene.cursors = scene.input.keyboard.createCursorKeys();
 
-        scene.isGameOver = false;
+        scene.isGameOver = false; // initializes game over state 
+
+        // game ends if player collides with an object 
         scene.physics.add.collider(scene.Player, scene.astroidGroup, () => {
             scene.isGameOver = true;
         });
@@ -328,9 +303,6 @@ class Play extends Phaser.Scene {
             scene.isGameOver = true;
         });
 
-
-        
-
         // adds distance counter
         let scoreConfig = {
             fontFamily: 'Impact, fantasy',
@@ -340,6 +312,7 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
 
+        // adds score text 
         scene.score = scene.add.text(game.config.width - 150, 50, p1Score + 'm', scoreConfig);
     }
 
@@ -374,6 +347,7 @@ class Play extends Phaser.Scene {
 
             gameOptions.obstacleSpeed += 100;
 
+            // sets velocity for obstacles 
             this.astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
             this.batGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
             this.catGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
@@ -386,7 +360,7 @@ class Play extends Phaser.Scene {
 
         if(this.playerGrounded){
             this.jumping = false;
-            // different number of jumps for earth and space 
+            // creates different number of jumps for earth and space 
             if (isEarth){
                 this.numJumps = gameOptions.jumpsEarth;
             }
@@ -395,9 +369,8 @@ class Play extends Phaser.Scene {
             }
         }
 
-         // *** add another condition that is true when a monolith appears ***
         // press right key to change from earth to space or from space to earth 
-        if(Phaser.Input.Keyboard.JustDown(this.cursors.right)){
+        if(Phaser.Input.Keyboard.JustDown(this.cursors.right) && this.canTeleport){
             this.game.sound.stopAll(); // stops all audio 
             if (isEarth){
                 this.sound.play("teleport_space_sfx");
@@ -451,22 +424,19 @@ class Play extends Phaser.Scene {
         }
 
         if(this.isGameOver){
-            if (isEarth) {
-                this.earth_bgm.stop();
-            } else {
-                this.space_bgm.stop();
-            }
+            this.game.sound.stopAll(); // stops all audio 
             this.sound.play("game_over_sfx");
             this.scene.start('gameOverScene', {score: Number((p1Score / 10).toFixed(0)), highscore: this.highscore});
 
+            // resets variables on game over 
             back_speed = 1;
             mid_speed = 2;
             fore_speed = 3;
             ground_speed = 4;
 
-            scoreMulti = 1;
-
             gameOptions.obstacleSpeed = 350;
+
+            isEarth = true; 
         }
 
         let randomNum = Phaser.Math.Between(0, 1500);
@@ -484,8 +454,9 @@ class Play extends Phaser.Scene {
             }
 
             // creates earth monolith
-            if((p1Score / 10) % 100 == 0 && this.earthMonolithGroup.getLength() < 4){
+            if((p1Score / 30) % 20 == 0 && this.earthMonolithGroup.getLength() < 4){
                 this.makeEarthMonolithFunc(game.config.width + 55);
+                this.canTeleport = true; // can teleport when monolith appears
             }
         }
 
@@ -505,13 +476,14 @@ class Play extends Phaser.Scene {
             }
 
             // creates space monolith 
-            if((p1Score / 10) % 100 == 0 && this.spaceMonolithGroup.getLength() < 4){
+            if((p1Score / 30) % 20 == 0 && this.spaceMonolithGroup.getLength() < 4){
                 this.makeSpaceMonolithFunc(game.config.width + 55);
+                this.canTeleport = true; // can teleport when monolith appears 
             }
         }
 
 
-        // destroys astroid if offscreen
+        // destroys obstacles when they are offscreen 
         this.astroidGroup.getChildren().forEach(function(astroid){
             if(astroid.x < - astroid.displayWidth / 2){
                 this.astroidGroup.killAndHide(astroid);

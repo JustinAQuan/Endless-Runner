@@ -30,7 +30,7 @@ class Menu extends Phaser.Scene {
         this.menu_bgm = this.sound.add(
             'menu_bgm', 
             {
-                volume: 0.3,
+                volume: 1,
                 loop: true
             }
         );

@@ -61,7 +61,7 @@ class Cutscene extends Phaser.Scene {
             scene.squirrel.setVelocityX(200);
         }, null, this);
 
-        this.time.delayedCall(50, () => {
+        this.time.delayedCall(5000, () => {
             this.add.text(game.config.width / 2, game.config.height / 1.5, 'Press any key to start').setOrigin(0.5);
             this.input.keyboard.on('keydown', () => {
                 this.scene.start('playScene', {highscore: 0});
