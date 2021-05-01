@@ -47,6 +47,8 @@ class Play extends Phaser.Scene {
 
         this.load.audio('slide_sfx', './assets/slide_sfx.wav');
 
+        this.load.audio('monolith_appear_sfx', './assets/monolith_appear_sfx.wav');
+
         // game over sfx
         this.load.audio('game_over_sfx', './assets/game_over_sfx.wav');
 
@@ -373,11 +375,13 @@ class Play extends Phaser.Scene {
 
         // press right key to change from earth to space or from space to earth 
         if(Phaser.Input.Keyboard.JustDown(this.cursors.right) && this.canTeleport){
-            this.game.sound.stopAll(); // stops all audio 
+            
             if (isEarth){
+                this.earth_bgm.stop(); // stops bgm
                 this.sound.play("teleport_space_sfx");
             }
             else {
+                this.space_bgm.stop(); // stops bgm 
                 this.sound.play("teleport_earth_sfx");
             }
             isEarth = !isEarth; // switches between earth and space 
@@ -460,6 +464,7 @@ class Play extends Phaser.Scene {
             if((p1Score / 30) % 20 == 0 && this.earthMonolithGroup.getLength() < 4){
                 this.makeEarthMonolithFunc(game.config.width + 55);
                 this.canTeleport = true; // can teleport when monolith appears
+                this.sound.play("monolith_appear_sfx");
             }
         }
 
@@ -482,6 +487,7 @@ class Play extends Phaser.Scene {
             if((p1Score / 30) % 20 == 0 && this.spaceMonolithGroup.getLength() < 4){
                 this.makeSpaceMonolithFunc(game.config.width + 55);
                 this.canTeleport = true; // can teleport when monolith appears 
+                this.sound.play("monolith_appear_sfx");
             }
         }
 
