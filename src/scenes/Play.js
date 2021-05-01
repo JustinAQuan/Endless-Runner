@@ -292,15 +292,21 @@ class Play extends Phaser.Scene {
         // adds player sprite
         scene.Player = scene.physics.add.sprite(game.config.width / 5, game.config.height - game.config.height / 3, 'Player').setOrigin(0.5, 1);
         scene.Player.play('player');
-        scene.Player.body.setGravityY(gameOptions.playerGravity);
         scene.Player.setSize(89, 77);
+       
+        // different gravity for earth and space
+        if (isEarth) {
+            scene.Player.body.setGravityY(gameOptions.playerGravityEarth);
+            // allows the player to "walk" on the floor
+            scene.physics.add.collider(scene.Player, scene.earthFloor);
+        }
+        else {
+            scene.Player.body.setGravityY(gameOptions.playerGravitySpace);
+            scene.physics.add.collider(scene.Player, scene.spaceFloor);
+        }
 
         // setting up cursor keys
         scene.cursors = scene.input.keyboard.createCursorKeys();
-
-        // allows the player to "walk" on the floor
-        scene.physics.add.collider(scene.Player, scene.earthFloor);
-        scene.physics.add.collider(scene.Player, scene.spaceFloor);
 
         scene.isGameOver = false;
         scene.physics.add.collider(scene.Player, scene.astroidGroup, () => {
@@ -380,7 +386,13 @@ class Play extends Phaser.Scene {
 
         if(this.playerGrounded){
             this.jumping = false;
-            this.numJumps = gameOptions.jumps;
+            // different number of jumps for earth and space 
+            if (isEarth){
+                this.numJumps = gameOptions.jumpsEarth;
+            }
+            else {
+                this.numJumps = gameOptions.jumpsSPace;
+            }
         }
 
          // *** add another condition that is true when a monolith appears ***
@@ -420,12 +432,22 @@ class Play extends Phaser.Scene {
             this.Player.setSize(89, 55);
         }
         else if(this.cursors.down.isDown && !this.playerGrounded){
-            this.Player.body.setGravityY(gameOptions.playerGravity * 3);
+            if (isEarth) {
+                this.Player.body.setGravityY(gameOptions.playerGravityEarth * 3);
+            }
+            else {
+                this.Player.body.setGravityY(gameOptions.playerGravitySpace * 3);
+            }
         }
         else if(this.cursors.up.isUp && this.playerGrounded && !this.Player.anims.isPlaying){
             this.Player.play('player');
             this.Player.setSize(89, 77);
-            this.Player.body.setGravityY(gameOptions.playerGravity);
+            if (isEarth) {
+                this.Player.body.setGravityY(gameOptions.playerGravityEarth);
+            }
+            else {
+                this.Player.body.setGravityY(gameOptions.playerGravitySpace);
+            }
         }
 
         if(this.isGameOver){

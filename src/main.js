@@ -52,9 +52,11 @@ let game = new Phaser.Game(config);
 let gameOptions = {
     obstacleSpeed: 350,
     spawnRange: [500, 600],
-    playerGravity: 900,
+    playerGravityEarth: 1500,
+    playerGravitySpace: 900,
     jumpForce: 400,
-    jumps: 2
+    jumpsEarth: 1,
+    jumpsSPace: 2
 }
 // parallax speeds 
 let back_speed = 1;
