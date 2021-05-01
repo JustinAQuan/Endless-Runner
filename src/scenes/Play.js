@@ -13,6 +13,7 @@ class Play extends Phaser.Scene {
 
         // texture atlas
         this.load.atlas('corgi_anims', './assets/corgi_anims.png', './assets/corgi_anims.json');
+        this.load.atlas('meteor', './assets/meteor.png', './assets/meteor.json');
 
 
         // Background
@@ -45,6 +46,8 @@ class Play extends Phaser.Scene {
         this.load.image('cat1', './assets/cat1.png');
         this.load.image('cat2', './assets/cat2.png');
         this.load.image('monolith_earth', './assets/monolith_earth.png');
+        this.load.image('space_puppy', './assets/space_puppy_frame1.png');
+        this.load.image('monolith_space', './assets/monolith_space.png');
 
 
         // Space background music
@@ -80,14 +83,14 @@ class Play extends Phaser.Scene {
         let scene = this;
 
         // game starts on earth
-        isEarth = true;
+        isEarth = false;
 
         if (isEarth) {
            // adds earth background music
             scene.earth_bgm = scene.sound.add(
                 'earth_bgm', 
                 {
-                    volume: 1,
+                    volume: 0.3,
                     loop: true
                 }
             );
@@ -98,102 +101,120 @@ class Play extends Phaser.Scene {
             scene.space_bgm = scene.sound.add(
                 'space_bgm', 
                 {
-                    volume: 1,
+                    volume: 0.3,
                     loop: true
                 }
             );
             // plays space background music
             scene.space_bgm.play();
         }
-        
-    
-        // adds space background 
-        scene.space_bg1 = scene.add.tileSprite(
-            game.config.width, 
-            0, 
-            960,
-            540,
-            'space_bg1'
-        ).setOrigin(0, 0);
 
-        scene.space_bg2 = scene.add.tileSprite(
-            game.config.width, 
-            0, 
-            960,
-            540,
-            'space_bg2'
-        ).setOrigin(0, 0);
+        if (isEarth) {
+            // adds earth background 
+            scene.earth_bg3 = scene.add.tileSprite(
+                0, 
+                0, 
+                960,
+                540,
+                'earth_bg3'
+            ).setOrigin(0, 0);
 
-        scene.space_bg3 = scene.add.tileSprite(
-            game.config.width, 
-            0, 
-            960,
-            540,
-            'space_bg3'
-        ).setOrigin(0, 0);
+            scene.earth_bg2 = scene.add.tileSprite(
+                0, 
+                0, 
+                960,
+                540,
+                'earth_bg2'
+            ).setOrigin(0, 0);
 
-        // adds earth background 
-        scene.earth_bg3 = scene.add.tileSprite(
-            0, 
-            0, 
-            960,
-            540,
-            'earth_bg3'
-        ).setOrigin(0, 0);
+            scene.earth_bg1 = scene.add.tileSprite(
+                0, 
+                0, 
+                960,
+                540,
+                'earth_bg1'
+            ).setOrigin(0, 0);
 
-        scene.earth_bg2 = scene.add.tileSprite(
-            0, 
-            0, 
-            960,
-            540,
-            'earth_bg2'
-        ).setOrigin(0, 0);
+            // adds earth floor
+            scene.earthFloor = scene.add.tileSprite(
+                0,
+                game.config.height - game.config.height / 5,
+                game.config.width,
+                game.config.height / 5,
+                'earth_floor'
+            ).setOrigin(0, 0);
+        }
+        else {
+            console.log('eeby deeby');
+            // adds space background 
+            scene.space_bg1 = scene.add.tileSprite(
+                0,
+                0, 
+                960,
+                540,
+                'space_bg1'
+            ).setOrigin(0, 0);
 
-        scene.earth_bg1 = scene.add.tileSprite(
-            0, 
-            0, 
-            960,
-            540,
-            'earth_bg1'
-        ).setOrigin(0, 0);
+            scene.space_bg2 = scene.add.tileSprite(
+                0,
+                0, 
+                960,
+                540,
+                'space_bg2'
+            ).setOrigin(0, 0);
 
-         // adds earth floor
-         scene.earthFloor = scene.add.tileSprite(
-            0,
-            game.config.height - game.config.height / 5,
-            game.config.width,
-            game.config.height / 5,
-            'earth_floor'
-        ).setOrigin(0, 0);
+            scene.space_bg3 = scene.add.tileSprite(
+                0,
+                0, 
+                960,
+                540,
+                'space_bg3'
+            ).setOrigin(0, 0);
 
-        // adds space floor
-        scene.spaceFloor = scene.add.tileSprite(
-            game.config.width,
-            game.config.height - game.config.height / 5,
-            game.config.width,
-            game.config.height / 5,
-            'space_bg4'
-        ).setOrigin(0, 0);
+            // adds space floor
+            scene.spaceFloor = scene.add.tileSprite(
+                0,
+                game.config.height - game.config.height / 5,
+                game.config.width,
+                game.config.height / 5,
+                'space_bg4'
+            ).setOrigin(0, 0);
+        }
 
+        if (isEarth) {
+            scene.physics.add.existing(scene.earthFloor);
+            scene.earthFloor.body.setImmovable(true);
+        }
+        else {
+            scene.physics.add.existing(scene.spaceFloor);
+            scene.spaceFloor.body.setImmovable(true);
+        }
 
-        scene.physics.add.existing(scene.earthFloor);
-        scene.earthFloor.body.setImmovable(true);
-        scene.physics.add.existing(scene.spaceFloor);
-        scene.spaceFloor.body.setImmovable(true);
+        // creates meteor animation 
+        // *** animation isn't playing, only uses first frame ***
+        this.anims.create({
+            key: 'meteor',
+            frames: ['meteor_frame1.png', 'meteor_frame2.png', 'meteor_frame3.png'],
+            repeat: -1,
+            frameRate: 12
+        });
 
-
+        // *** change collision for obstacles (body.setCircle(25);) ***
+        // *** change canvas placement of obstacles *** 
 
         // adds astroid group
         scene.astroidGroup = scene.physics.add.group();
         
         scene.makeAstroidFunc = function makeAstroid(x, y){
-            scene.astroid = scene.add.sprite(x, y, 'astroid');
+            scene.astroid = scene.add.sprite(x, y, 'meteor');
+            //scene.astroid.animations.add('meteor');
+            //scene.astroid.animations.play('meteor', 1, true);
             scene.astroidGroup.add(scene.astroid);
             scene.astroid.body.setImmovable();
             scene.astroid.body.setCircle(25);
             scene.astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
-
+        
         // adds bats
         scene.batGroup = scene.physics.add.group();
 
@@ -231,6 +252,28 @@ class Play extends Phaser.Scene {
             scene.earthMonolith.body.setCircle(25);
             scene.earthMonolithGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
+
+        // adds space puppy 
+        scene.spacePuppyGroup = scene.physics.add.group();
+
+        scene.makeSpacePuppyFunc = function makeSpacePuppy(x){
+            scene.spacePuppy = scene.add.sprite(x, 399, 'space_puppy');
+            scene.spacePuppyGroup.add(scene.spacePuppy);
+            scene.spacePuppy.body.setImmovable();
+            scene.spacePuppy.body.setCircle(25);
+            scene.spacePuppyGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+        }
+
+        // adds space monolith
+        scene.spaceMonolithGroup = scene.physics.add.group();
+
+        scene.makeSpaceMonolithFunc = function makeSpaceMonolith(x){
+            scene.spaceMonolith = scene.add.sprite(x, game.config.height / 3 + 104, 'monolith_space');
+            scene.spaceMonolithGroup.add(scene.spaceMonolith);
+            scene.spaceMonolith.body.setImmovable();
+            scene.spaceMonolith.body.setCircle(25);
+            scene.spaceMonolithGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+        }
         
         // adds player animation
         this.anims.create({
@@ -266,6 +309,12 @@ class Play extends Phaser.Scene {
         scene.physics.add.collider(scene.Player, scene.earthMonolithGroup, () => {
             scene.isGameOver = true;
         });
+        scene.physics.add.collider(scene.Player, scene.spacePuppyGroup, () => {
+            scene.isGameOver = true;
+        });
+        scene.physics.add.collider(scene.Player, scene.spaceMonolithGroup, () => {
+            scene.isGameOver = true;
+        });
 
 
         // initialize score
@@ -288,17 +337,20 @@ class Play extends Phaser.Scene {
         this.p1Score += this.scoreMulti;
         this.score.text = Number((this.p1Score / 15).toFixed(0)) + 'm';
 
-        // earth parallax 
-        this.earth_bg1.tilePositionX += back_speed;
-        this.earth_bg2.tilePositionX += mid_speed;
-        this.earth_bg3.tilePositionX += fore_speed;
-        this.earthFloor.tilePositionX += ground_speed;
-
-        // space parallax 
-        this.space_bg1.tilePositionX += back_speed;
-        this.space_bg2.tilePositionX += mid_speed;
-        this.space_bg3.tilePositionX += fore_speed;
-        this.spaceFloor.tilePositionX += ground_speed;
+        if (isEarth) {
+            // earth parallax 
+            this.earth_bg1.tilePositionX += back_speed;
+            this.earth_bg2.tilePositionX += mid_speed;
+            this.earth_bg3.tilePositionX += fore_speed;
+            this.earthFloor.tilePositionX += ground_speed;
+        }
+        else {
+            // space parallax 
+            this.space_bg1.tilePositionX += back_speed;
+            this.space_bg2.tilePositionX += mid_speed;
+            this.space_bg3.tilePositionX += fore_speed;
+            this.spaceFloor.tilePositionX += ground_speed;
+        }
 
         if((this.p1Score / 15) % 250 == 0){
             if(fore_speed < 6){
@@ -311,10 +363,13 @@ class Play extends Phaser.Scene {
             this.scoreMulti += 0.5;
 
             gameOptions.obstacleSpeed += 100;
+
             this.astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
             this.batGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
             this.catGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
             this.earthMonolithGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+            this.spacePuppyGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+            this.spaceMonolithGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
 
         this.playerGrounded = this.Player.body.touching.down;
@@ -403,6 +458,16 @@ class Play extends Phaser.Scene {
             if(randomNum % 139 == 0 && this.astroidGroup.getLength() < 4){
                 this.makeAstroidFunc(game.config.width + 55/ 2, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 5));
             }
+
+            // creates space puppies 
+            if(randomNum % 300 == 0 && this.spacePuppyGroup.getLength() < 5){
+                this.makeSpacePuppyFunc(game.config.width + 55);
+            }
+
+            // creates space monolith 
+            if((this.p1Score / 10) % 100 == 0 && this.spaceMonolithGroup.getLength() < 4){
+                this.makeSpaceMonolithFunc(game.config.width + 55);
+            }
         }
 
 
@@ -432,6 +497,20 @@ class Play extends Phaser.Scene {
             if(earthMonolith.x < - earthMonolith.displayWidth / 2){
                 this.earthMonolithGroup.killAndHide(earthMonolith);
                 this.earthMonolithGroup.remove(earthMonolith);
+            }
+        }, this);
+
+        this.spacePuppyGroup.getChildren().forEach(function(spacePuppy){
+            if(spacePuppy.x < - spacePuppy.displayWidth / 2){
+                this.spacePuppyGroup.killAndHide(spacePuppy);
+                this.spacePuppyGroup.remove(spacePuppy);
+            }
+        }, this);
+
+        this.spaceMonolithGroup.getChildren().forEach(function(spaceMonolith){
+            if(spaceMonolith.x < - spaceMonolith.displayWidth / 2){
+                this.spaceMonolithGroup.killAndHide(spaceMonolith);
+                this.spaceMonolithGroup.remove(spaceMonolith);
             }
         }, this);
     }
