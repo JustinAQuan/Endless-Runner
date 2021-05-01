@@ -45,6 +45,8 @@ class Play extends Phaser.Scene {
         // jump sfx
         this.load.audio('jump_sfx', './assets/jump_sfx.wav');
 
+        this.load.audio('slide_sfx', './assets/slide_sfx.wav');
+
         // game over sfx
         this.load.audio('game_over_sfx', './assets/game_over_sfx.wav');
 
@@ -400,6 +402,7 @@ class Play extends Phaser.Scene {
         }
 
         if(this.cursors.down.isDown && this.playerGrounded){
+            this.sound.play("slide_sfx");
             this.Player.stop();
             this.Player.setTexture('Sliding');
             this.Player.setSize(89, 55);
