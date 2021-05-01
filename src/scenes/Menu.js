@@ -48,17 +48,9 @@ class Menu extends Phaser.Scene {
         this.input.keyboard.on('keydown', () => {
             this.menu_bgm.stop();
             this.sound.play('menu_sfx'); // plays menu sfx
+            // skips cutscene for testing
+            //this.scene.start('playScene'); 
             this.scene.start('playCutscene'); // starts game 
         }, this);
-    
-
-        
-
-        /*
-        this.time.delayedCall(1000, () => {
-            this.menu_bgm.stop();
-            this.scene.start('playCutscene');
-        }, null, this);
-        */
     }
 }

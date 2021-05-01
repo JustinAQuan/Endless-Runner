@@ -42,6 +42,12 @@ class Play extends Phaser.Scene {
         // Obstacles
         this.load.image('astroid', './assets/astroid.png');
 
+        this.load.image('bat', './assets/bat_frame1.png');
+
+        this.load.image('cat1', './assets/cat1.png');
+
+        this.load.image('cat2', './assets/cat2.png');
+
 
         // Space background music
         this.load.audio(
@@ -167,6 +173,33 @@ class Play extends Phaser.Scene {
             scene.astroid.body.setCircle(25);
             scene.astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
+
+        // adds bats
+        scene.batGroup = scene.physics.add.group();
+
+        scene.makeBatFunc = function makeBat(x, y){
+            scene.bat = scene.add.sprite(x, y, 'bat');
+            scene.batGroup.add(scene.bat);
+            scene.bat.body.setImmovable();
+            scene.bat.body.setCircle(25);
+            scene.batGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+        }
+
+        // adds cats 
+        scene.catGroup = scene.physics.add.group();
+
+        scene.makeCatFunc = function makeCat(x){
+            let catVal = Phaser.Math.Between(0, 1);
+            if (catVal == 0) {
+                scene.cat = scene.add.sprite(x, game.config.height - game.config.height / 4.5, 'cat1');
+            } else {
+                scene.cat = scene.add.sprite(x, game.config.height - game.config.height / 4.5, 'cat2');
+            }
+            scene.catGroup.add(scene.cat);
+            scene.cat.body.setImmovable();
+            scene.cat.body.setCircle(25);
+            scene.catGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+        }
     
         
         // adds player animation
@@ -194,6 +227,12 @@ class Play extends Phaser.Scene {
         scene.physics.add.collider(scene.Player, scene.astroidGroup, () => {
             scene.isGameOver = true;
         });
+        scene.physics.add.collider(scene.Player, scene.batGroup, () => {
+            scene.isGameOver = true;
+        });
+        scene.physics.add.collider(scene.Player, scene.catGroup, () => {
+            scene.isGameOver = true;
+        });
 
 
         // initialize score
@@ -210,6 +249,8 @@ class Play extends Phaser.Scene {
         }
 
         scene.score = scene.add.text(game.config.width - 150, 50, scene.p1Score + 'm', scoreConfig);
+        // game starts on earth
+        isEarth = true;
     }
 
     update() {
@@ -240,6 +281,8 @@ class Play extends Phaser.Scene {
 
             gameOptions.obstacleSpeed += 100;
             this.astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+            this.batGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+            this.catGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
 
         this.playerGrounded = this.Player.body.touching.down;
@@ -297,19 +340,56 @@ class Play extends Phaser.Scene {
 
         let randomNum = Phaser.Math.Between(0, 1500);
 
-        // create astroids every 15 meters
-        if(randomNum % 157 == 0 && this.astroidGroup.getLength() < 5){
-            this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height / 2));
+        // adds earth obstacles 
+        if (isEarth) {
+            // creates bats
+            if(randomNum % 157 == 0 && this.batGroup.getLength() < 5){
+                this.makeBatFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height / 2));
+            }
+            if(randomNum % 139 == 0 && this.batGroup.getLength() < 4){
+                this.makeBatFunc(game.config.width + 55, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 3));
+            }
+
+            // creates cats 
+            if(randomNum % 157 == 0 && this.catGroup.getLength() < 5){
+                this.makeCatFunc(game.config.width + 55);
+            }
+            if(randomNum % 139 == 0 && this.catGroup.getLength() < 4){
+                this.makeCatFunc(game.config.width + 55);
+            }
         }
-        if(randomNum % 139 == 0 && this.astroidGroup.getLength() < 4){
-            this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 5));
+
+        // adds space obstacles 
+        if (!isEarth){
+            // create astroids every 15 meters
+            if(randomNum % 157 == 0 && this.astroidGroup.getLength() < 5){
+                this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height / 2));
+            }
+            if(randomNum % 139 == 0 && this.astroidGroup.getLength() < 4){
+                this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 5));
+            }
         }
+
 
         // destroys astroid if offscreen
         this.astroidGroup.getChildren().forEach(function(astroid){
             if(astroid.x < - astroid.displayWidth / 2){
                 this.astroidGroup.killAndHide(astroid);
                 this.astroidGroup.remove(astroid);
+            }
+        }, this);
+
+        this.batGroup.getChildren().forEach(function(bat){
+            if(bat.x < - bat.displayWidth / 2){
+                this.batGroup.killAndHide(bat);
+                this.batGroup.remove(bat);
+            }
+        }, this);
+
+        this.catGroup.getChildren().forEach(function(cat){
+            if(cat.x < - cat.displayWidth / 2){
+                this.batGroup.killAndHide(cat);
+                this.batGroup.remove(cat);
             }
         }, this);
     }
