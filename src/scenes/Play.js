@@ -382,24 +382,15 @@ class Play extends Phaser.Scene {
             if(randomNum % 157 == 0 && this.batGroup.getLength() < 5){
                 this.makeBatFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height / 2));
             }
-            if(randomNum % 139 == 0 && this.batGroup.getLength() < 4){
-                this.makeBatFunc(game.config.width + 55, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 3));
-            }
 
             // creates cats 
-            if(randomNum % 157 == 0 && this.catGroup.getLength() < 5){
-                this.makeCatFunc(game.config.width + 55);
-            }
-            if(randomNum % 139 == 0 && this.catGroup.getLength() < 4){
+            if(randomNum % 300 == 0 && this.catGroup.getLength() < 5){
                 this.makeCatFunc(game.config.width + 55);
             }
 
             // creates earth monolith
-            if(randomNum % 157 == 0 && this.batGroup.getLength() < 5){
-                this.makeEarthMonolithFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height / 2));
-            }
-            if(randomNum % 139 == 0 && this.batGroup.getLength() < 4){
-                this.makeEarthMonolithFunc(game.config.width + 55, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 3));
+            if((this.p1Score / 10) % 100 == 0 && this.earthMonolithGroup.getLength() < 4){
+                this.makeEarthMonolithFunc(game.config.width + 55);
             }
         }
 
