@@ -63,4 +63,8 @@ let fore_speed = 3;
 let ground_speed = 4;
 
 // if current scene is earth or space 
-let isEarth;
+let isEarth = false;
+
+// initialize score
+let p1Score = 0;
+let scoreMulti = 1;

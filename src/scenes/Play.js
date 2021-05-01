@@ -76,14 +76,21 @@ class Play extends Phaser.Scene {
             './assets/game_over_sfx.wav'
         );
 
+        this.load.audio(
+            'teleport_earth_sfx',
+            './assets/teleport_earth_sfx.wav'
+        );
+
+        this.load.audio(
+            'teleport_space_sfx',
+            './assets/teleport_space_sfx.wav'
+        );
+
     }
 
     create() {
         // useful for some functions
         let scene = this;
-
-        // game starts on earth
-        isEarth = false;
 
         if (isEarth) {
            // adds earth background music
@@ -145,7 +152,6 @@ class Play extends Phaser.Scene {
             ).setOrigin(0, 0);
         }
         else {
-            console.log('eeby deeby');
             // adds space background 
             scene.space_bg1 = scene.add.tileSprite(
                 0,
@@ -317,9 +323,7 @@ class Play extends Phaser.Scene {
         });
 
 
-        // initialize score
-        scene.p1Score = 0;
-        scene.scoreMulti = 1;
+        
 
         // adds distance counter
         let scoreConfig = {
@@ -330,12 +334,12 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
 
-        scene.score = scene.add.text(game.config.width - 150, 50, scene.p1Score + 'm', scoreConfig);
+        scene.score = scene.add.text(game.config.width - 150, 50, p1Score + 'm', scoreConfig);
     }
 
     update() {
-        this.p1Score += this.scoreMulti;
-        this.score.text = Number((this.p1Score / 15).toFixed(0)) + 'm';
+        p1Score += scoreMulti;
+        this.score.text = Number((p1Score / 15).toFixed(0)) + 'm';
 
         if (isEarth) {
             // earth parallax 
@@ -352,7 +356,7 @@ class Play extends Phaser.Scene {
             this.spaceFloor.tilePositionX += ground_speed;
         }
 
-        if((this.p1Score / 15) % 250 == 0){
+        if((p1Score / 15) % 250 == 0){
             if(fore_speed < 6){
                 back_speed += 0.75;
                 mid_speed += 0.75;
@@ -360,7 +364,7 @@ class Play extends Phaser.Scene {
                 ground_speed += 0.5;
             }
 
-            this.scoreMulti += 0.5;
+            scoreMulti += 0.5;
 
             gameOptions.obstacleSpeed += 100;
 
@@ -377,6 +381,20 @@ class Play extends Phaser.Scene {
         if(this.playerGrounded){
             this.jumping = false;
             this.numJumps = gameOptions.jumps;
+        }
+
+         // *** add another condition that is true when a monolith appears ***
+        // press right key to change from earth to space or from space to earth 
+        if(Phaser.Input.Keyboard.JustDown(this.cursors.right)){
+            this.game.sound.stopAll(); // stops all audio 
+            if (isEarth){
+                this.sound.play("teleport_space_sfx");
+            }
+            else {
+                this.sound.play("teleport_earth_sfx");
+            }
+            isEarth = !isEarth; // switches between earth and space 
+            this.scene.restart(); // resets scene 
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.numJumps > 0){
@@ -417,14 +435,14 @@ class Play extends Phaser.Scene {
                 this.space_bgm.stop();
             }
             this.sound.play("game_over_sfx");
-            this.scene.start('gameOverScene', {score: Number((this.p1Score / 10).toFixed(0)), highscore: this.highscore});
+            this.scene.start('gameOverScene', {score: Number((p1Score / 10).toFixed(0)), highscore: this.highscore});
 
             back_speed = 1;
             mid_speed = 2;
             fore_speed = 3;
             ground_speed = 4;
 
-            this.scoreMulti = 1;
+            scoreMulti = 1;
 
             gameOptions.obstacleSpeed = 350;
         }
@@ -444,7 +462,7 @@ class Play extends Phaser.Scene {
             }
 
             // creates earth monolith
-            if((this.p1Score / 10) % 100 == 0 && this.earthMonolithGroup.getLength() < 4){
+            if((p1Score / 10) % 100 == 0 && this.earthMonolithGroup.getLength() < 4){
                 this.makeEarthMonolithFunc(game.config.width + 55);
             }
         }
@@ -465,7 +483,7 @@ class Play extends Phaser.Scene {
             }
 
             // creates space monolith 
-            if((this.p1Score / 10) % 100 == 0 && this.spaceMonolithGroup.getLength() < 4){
+            if((p1Score / 10) % 100 == 0 && this.spaceMonolithGroup.getLength() < 4){
                 this.makeSpaceMonolithFunc(game.config.width + 55);
             }
         }

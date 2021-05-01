@@ -29,5 +29,9 @@ class GameOver extends Phaser.Scene {
                 this.scene.start('playScene', {highscore: this.highscore});
             }, this)
         }, null, this);
+
+        // resets score
+        p1Score = 0;
+        scoreMulti = 1;
     }
 }

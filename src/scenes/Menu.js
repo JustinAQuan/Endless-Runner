@@ -49,8 +49,8 @@ class Menu extends Phaser.Scene {
             this.menu_bgm.stop();
             this.sound.play('menu_sfx'); // plays menu sfx
             // skips cutscene for testing
-            this.scene.start('playScene'); 
-            //this.scene.start('playCutscene'); // starts game 
+            //this.scene.start('playScene'); 
+            this.scene.start('playCutscene'); // starts game 
         }, this);
     }
 }
