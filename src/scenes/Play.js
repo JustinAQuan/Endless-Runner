@@ -41,18 +41,22 @@ class Play extends Phaser.Scene {
 
         // Obstacles
         this.load.image('astroid', './assets/astroid.png');
-
         this.load.image('bat', './assets/bat_frame1.png');
-
         this.load.image('cat1', './assets/cat1.png');
-
         this.load.image('cat2', './assets/cat2.png');
+        this.load.image('monolith_earth', './assets/monolith_earth.png');
 
 
         // Space background music
         this.load.audio(
             'space_bgm', 
             './assets/space_bgm.wav'
+        );
+
+        // earth background music
+        this.load.audio(
+            'earth_bgm',
+            './assets/earth_bgm.wav'
         );
 
 
@@ -75,17 +79,33 @@ class Play extends Phaser.Scene {
         // useful for some functions
         let scene = this;
 
-        // adds space background music
-        scene.space_bgm = scene.sound.add(
-            'space_bgm', 
-            {
-                volume: 1,
-                loop: true
-            }
-        );
+        // game starts on earth
+        isEarth = true;
 
-        // plays space background music
-        scene.space_bgm.play();
+        if (isEarth) {
+           // adds earth background music
+            scene.earth_bgm = scene.sound.add(
+                'earth_bgm', 
+                {
+                    volume: 1,
+                    loop: true
+                }
+            );
+            // plays space background music
+            scene.earth_bgm.play(); 
+        } else {
+            // adds space background music
+            scene.space_bgm = scene.sound.add(
+                'space_bgm', 
+                {
+                    volume: 1,
+                    loop: true
+                }
+            );
+            // plays space background music
+            scene.space_bgm.play();
+        }
+        
     
         // adds space background 
         scene.space_bg1 = scene.add.tileSprite(
@@ -201,6 +221,16 @@ class Play extends Phaser.Scene {
             scene.catGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
     
+        // adds earth monolith
+        scene.earthMonolithGroup = scene.physics.add.group();
+
+        scene.makeEarthMonolithFunc = function makeEarthMonolith(x){
+            scene.earthMonolith = scene.add.sprite(x, game.config.height / 3 + 104, 'monolith_earth');
+            scene.earthMonolithGroup.add(scene.earthMonolith);
+            scene.earthMonolith.body.setImmovable();
+            scene.earthMonolith.body.setCircle(25);
+            scene.earthMonolithGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+        }
         
         // adds player animation
         this.anims.create({
@@ -233,6 +263,9 @@ class Play extends Phaser.Scene {
         scene.physics.add.collider(scene.Player, scene.catGroup, () => {
             scene.isGameOver = true;
         });
+        scene.physics.add.collider(scene.Player, scene.earthMonolithGroup, () => {
+            scene.isGameOver = true;
+        });
 
 
         // initialize score
@@ -249,8 +282,6 @@ class Play extends Phaser.Scene {
         }
 
         scene.score = scene.add.text(game.config.width - 150, 50, scene.p1Score + 'm', scoreConfig);
-        // game starts on earth
-        isEarth = true;
     }
 
     update() {
@@ -283,6 +314,7 @@ class Play extends Phaser.Scene {
             this.astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
             this.batGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
             this.catGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+            this.earthMonolithGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
 
         this.playerGrounded = this.Player.body.touching.down;
@@ -324,7 +356,11 @@ class Play extends Phaser.Scene {
         }
 
         if(this.isGameOver){
-            this.space_bgm.stop();
+            if (isEarth) {
+                this.earth_bgm.stop();
+            } else {
+                this.space_bgm.stop();
+            }
             this.sound.play("game_over_sfx");
             this.scene.start('gameOverScene', {score: Number((this.p1Score / 10).toFixed(0)), highscore: this.highscore});
 
@@ -357,6 +393,14 @@ class Play extends Phaser.Scene {
             if(randomNum % 139 == 0 && this.catGroup.getLength() < 4){
                 this.makeCatFunc(game.config.width + 55);
             }
+
+            // creates earth monolith
+            if(randomNum % 157 == 0 && this.batGroup.getLength() < 5){
+                this.makeEarthMonolithFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height / 2));
+            }
+            if(randomNum % 139 == 0 && this.batGroup.getLength() < 4){
+                this.makeEarthMonolithFunc(game.config.width + 55, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 3));
+            }
         }
 
         // adds space obstacles 
@@ -366,7 +410,7 @@ class Play extends Phaser.Scene {
                 this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height / 2));
             }
             if(randomNum % 139 == 0 && this.astroidGroup.getLength() < 4){
-                this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 5));
+                this.makeAstroidFunc(game.config.width + 55/ 2, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 5));
             }
         }
 
@@ -388,8 +432,15 @@ class Play extends Phaser.Scene {
 
         this.catGroup.getChildren().forEach(function(cat){
             if(cat.x < - cat.displayWidth / 2){
-                this.batGroup.killAndHide(cat);
-                this.batGroup.remove(cat);
+                this.catGroup.killAndHide(cat);
+                this.catGroup.remove(cat);
+            }
+        }, this);
+
+        this.earthMonolithGroup.getChildren().forEach(function(earthMonolith){
+            if(earthMonolith.x < - earthMonolith.displayWidth / 2){
+                this.earthMonolithGroup.killAndHide(earthMonolith);
+                this.earthMonolithGroup.remove(earthMonolith);
             }
         }, this);
     }
