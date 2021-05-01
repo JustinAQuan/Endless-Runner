@@ -10,6 +10,14 @@ class Menu extends Phaser.Scene {
             './assets/menu_bgm.wav'
         );
 
+        // menu select sound effect
+        this.load.audio(
+            'menu_sfx', 
+            './assets/menu_sfx.wav'
+        );
+
+
+
         // menu image 
         this.load.image(
             'corgiMenuArt', 
@@ -36,9 +44,21 @@ class Menu extends Phaser.Scene {
             'corgiMenuArt'
         ).setOrigin(0, 0);
 
+        // starts after pressing any key 
+        this.input.keyboard.on('keydown', () => {
+            this.menu_bgm.stop();
+            this.sound.play('menu_sfx'); // plays menu sfx
+            this.scene.start('playCutscene'); // starts game 
+        }, this);
+    
+
+        
+
+        /*
         this.time.delayedCall(1000, () => {
             this.menu_bgm.stop();
             this.scene.start('playCutscene');
         }, null, this);
+        */
     }
 }
