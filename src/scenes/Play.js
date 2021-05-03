@@ -326,6 +326,50 @@ class Play extends Phaser.Scene {
         // adds score text 
         scene.score = scene.add.text(game.config.width - 150, 100, p1Score + 'm', scoreConfig);
         scene.monolithScore = scene.add.text(game.config.width - 350, 50, 'monolith : ' + p1MonolithScore, monoScoreConfig);
+
+        
+        this.createObstacle = function createObstacle() {
+            // earth obstacles 
+            if (isEarth){
+                let randomNum = Phaser.Math.Between(0, 5); // chance of no obstacle
+
+                // creates bats
+                if(randomNum <= 2 && this.batGroup.getLength() < 3){
+                    this.makeBatFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height - game.config.height / 3));
+                }
+
+                // creates cats 
+                else if(randomNum <= 4 && this.catGroup.getLength() < 5){
+                    this.makeCatFunc(game.config.width + 55);
+                } 
+            }
+
+            // space obstacles 
+            else{
+                let randomNum = Phaser.Math.Between(0, 3); // chance of no obstacle 
+
+                // create astroids every 15 meters
+                if(randomNum == 0 && this.astroidGroup.getLength() < 5){
+                    this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height / 2));
+                }
+                if(randomNum == 1 && this.astroidGroup.getLength() < 4){
+                    this.makeAstroidFunc(game.config.width + 55/ 2, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 5));
+                }
+
+                // creates space puppies 
+                if(randomNum == 2 && this.spacePuppyGroup.getLength() < 5){
+                    this.makeSpacePuppyFunc(game.config.width + 55);
+                }
+            }
+        }
+
+        // calls function to create obstacle after a certain amount of time 
+        this.makeObstacleEvent = this.time.addEvent({
+            delay: 850,  // time between creating obstacles 
+            callback: this.createObstacle, // function that creates obstacles 
+            callbackScope: this,
+            loop: true
+        });
     }
 
     update() {
@@ -458,51 +502,22 @@ class Play extends Phaser.Scene {
             isEarth = true; 
         }
 
-        let randomNum = Phaser.Math.Between(0, 1500);
-
-        // adds earth obstacles 
         if (isEarth) {
-            // creates bats
-            if(randomNum % 157 == 0 && this.batGroup.getLength() < 5){
-                this.makeBatFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height / 2));
-            }
-
-            // creates cats 
-            if(randomNum % 300 == 0 && this.catGroup.getLength() < 5){
-                this.makeCatFunc(game.config.width + 55);
-            }
-
             // creates earth monolith
-            if((p1Score / 30) % 20 == 0 && this.earthMonolithGroup.getLength() < 4){
+            if((p1Score / 30) % 25 == 0 && this.earthMonolithGroup.getLength() < 4){
                 this.makeEarthMonolithFunc(game.config.width + 55);
                 this.canTeleport = true; // can teleport when monolith appears
                 this.sound.play("monolith_appear_sfx");
             }
         }
-
-        // adds space obstacles 
-        if (!isEarth){
-            // create astroids every 15 meters
-            if(randomNum % 157 == 0 && this.astroidGroup.getLength() < 5){
-                this.makeAstroidFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height / 2));
-            }
-            if(randomNum % 139 == 0 && this.astroidGroup.getLength() < 4){
-                this.makeAstroidFunc(game.config.width + 55/ 2, Phaser.Math.Between(game.config.height / 2, game.config.height - game.config.height / 5));
-            }
-
-            // creates space puppies 
-            if(randomNum % 300 == 0 && this.spacePuppyGroup.getLength() < 5){
-                this.makeSpacePuppyFunc(game.config.width + 55);
-            }
-
+        else {
             // creates space monolith 
-            if((p1Score / 30) % 20 == 0 && this.spaceMonolithGroup.getLength() < 4){
+            if((p1Score / 30) % 25 == 0 && this.spaceMonolithGroup.getLength() < 4){
                 this.makeSpaceMonolithFunc(game.config.width + 55);
                 this.canTeleport = true; // can teleport when monolith appears 
                 this.sound.play("monolith_appear_sfx");
             }
         }
-
 
         // destroys obstacles when they are offscreen 
         this.astroidGroup.getChildren().forEach(function(astroid){

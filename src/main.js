@@ -51,6 +51,7 @@ let game = new Phaser.Game(config);
 // global game options
 let gameOptions = {
     obstacleSpeed: 350,
+    slowObstacleSpeed: 240,
     spawnRange: [500, 600],
     playerGravityEarth: 1500,
     playerGravitySpace: 900,
