@@ -189,8 +189,6 @@ class Play extends Phaser.Scene {
         
         scene.makeAstroidFunc = function makeAstroid(x, y){
             scene.astroid = scene.add.sprite(x, y, 'meteor');
-            //scene.astroid.animations.add('meteor');
-            //scene.astroid.animations.play('meteor', 1, true);
             scene.astroidGroup.add(scene.astroid);
             scene.astroid.body.setImmovable();
             scene.astroid.body.setCircle(25);
@@ -231,7 +229,7 @@ class Play extends Phaser.Scene {
             scene.earthMonolith = scene.add.sprite(x, game.config.height / 3 + 104, 'monolith_earth');
             scene.earthMonolithGroup.add(scene.earthMonolith);
             scene.earthMonolith.body.setImmovable();
-            scene.earthMonolith.body.setCircle(25);
+            scene.earthMonolith.body.setSize(75, 300);
             scene.earthMonolithGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
 
@@ -253,7 +251,7 @@ class Play extends Phaser.Scene {
             scene.spaceMonolith = scene.add.sprite(x, game.config.height / 3 + 104, 'monolith_space');
             scene.spaceMonolithGroup.add(scene.spaceMonolith);
             scene.spaceMonolith.body.setImmovable();
-            scene.spaceMonolith.body.setCircle(25);
+            scene.spaceMonolith.body.setSize(75, 300);
             scene.spaceMonolithGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
         }
         
