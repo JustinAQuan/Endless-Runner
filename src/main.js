@@ -6,19 +6,20 @@ Collaborator Names:
     Divyansh Khare
 
 Game Title:
-    Corgi Game Something
+    Cute Corgi Chase
 
 Date Completed:
-    TBD
+    5/3/21 
 
 Creative Tilt Justification:
-1)  do something technically interesting?
-    Are you particularly proud of a programming technique you implemented?
-    Did you look beyond the class examples and learn how to do something new? (5)
+    1)  We added a teleportation mechanic to the game, where the player switches between Earth and space. 
+        We had to figure out how to switch things like the art, obstacles, and physics between the two locations. 
+        The player teleports by pressing the right arrow key when they are near a monolith. 
+        This code is in Play.js around line 428, and other code involved uses the Boolean values isEarth and canTeleport. 
 
-2)  ...have a great visual style?
-    Does it use music or art that you're particularly proud of?
-    Are you trying something new or clever with the endless runner form? (5)
+    2)  We challenged ourselves to work on parts of the game that we don't have a lot of experience in, 
+        such as with the player animation and the background music and sound effects. 
+
 ********************************************************************/
 
 let config = {
