@@ -61,6 +61,27 @@ class Cutscene extends Phaser.Scene {
             scene.squirrel.setVelocityX(200);
         }, null, this);
 
+        // config for menu text 
+        let textConfig = {
+            fontSize: '28px',
+            backgroundColor: '#CDBD7F',
+            color: '#3E3328',
+            align: 'left',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 0 
+        }
+
+        // adds text explaining controls 
+        this.add.text(
+            game.config.width / 2,
+            game.config.height / 2,
+            'Press ↑ to Jump\nPress ↓ to Slide\nWhen you are on Earth, you have one jump.\nWhen you are in Space, you have two!\nPress → to Teleport when you see a Monolith',
+            textConfig
+        ).setOrigin(0.5); 
+
         this.time.delayedCall(5000, () => {
             this.add.text(game.config.width / 2, game.config.height / 1.5, 'Press any key to start').setOrigin(0.5);
             this.input.keyboard.on('keydown', () => {
