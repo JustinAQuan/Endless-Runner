@@ -389,7 +389,7 @@ class Play extends Phaser.Scene {
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.numJumps > 0){
-            this.sound.play("jump_sfx");
+            this.sound.play('jump_sfx');
             this.Player.stop();
             this.Player.setTexture('Sliding');
             this.Player.setSize(89, 55);
@@ -405,8 +405,12 @@ class Play extends Phaser.Scene {
             this.jumping = false;
         }
 
+        // plays sliding sound effect once 
+        if(Phaser.Input.Keyboard.JustDown(this.cursors.down) && this.playerGrounded){
+            this.sound.play('slide_sfx');
+        }
+
         if(this.cursors.down.isDown && this.playerGrounded){
-            this.sound.play("slide_sfx");
             this.Player.stop();
             this.Player.setTexture('Sliding');
             this.Player.setSize(89, 55);
