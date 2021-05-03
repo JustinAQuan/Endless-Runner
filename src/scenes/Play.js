@@ -335,7 +335,7 @@ class Play extends Phaser.Scene {
 
                 // creates bats
                 if(randomNum <= 2 && this.batGroup.getLength() < 3){
-                    this.makeBatFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height - game.config.height / 3));
+                    this.makeBatFunc(game.config.width + 55, Phaser.Math.Between(150, game.config.height - game.config.height / 3 - 15));
                 }
 
                 // creates cats 
