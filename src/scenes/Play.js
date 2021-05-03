@@ -5,6 +5,7 @@ class Play extends Phaser.Scene {
 
     init(data) {
         this.highscore = data.highscore;
+        this.monolithHighScore = data.monolithHighScore;
     }
 
     preload() {
@@ -314,13 +315,22 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
 
+        let monoScoreConfig = {
+            fontFamily: 'Impact, fantasy',
+            fontSize: '30px',
+            color: '#FFFFFF',
+            align: 'right',
+            fixedWidth: 300
+        }
+
         // adds score text 
-        scene.score = scene.add.text(game.config.width - 150, 50, p1Score + 'm', scoreConfig);
+        scene.score = scene.add.text(game.config.width - 150, 100, p1Score + 'm', scoreConfig);
+        scene.monolithScore = scene.add.text(game.config.width - 350, 50, 'monolith : ' + p1MonolithScore, monoScoreConfig);
     }
 
     update() {
         p1Score += scoreMulti;
-        this.score.text = Number((p1Score / 15).toFixed(0)) + 'm';
+        this.score.text = Number((p1Score / 10).toFixed(0)) + 'm';
 
         if (isEarth) {
             // earth parallax 
@@ -373,7 +383,7 @@ class Play extends Phaser.Scene {
 
         // press right key to change from earth to space or from space to earth 
         if(Phaser.Input.Keyboard.JustDown(this.cursors.right) && this.canTeleport){
-            
+            p1MonolithScore += 1;
             if (isEarth){
                 this.earth_bgm.stop(); // stops bgm
                 this.sound.play("teleport_space_sfx");
@@ -435,7 +445,7 @@ class Play extends Phaser.Scene {
         if(this.isGameOver){
             this.game.sound.stopAll(); // stops all audio 
             this.sound.play("game_over_sfx");
-            this.scene.start('gameOverScene', {score: Number((p1Score / 10).toFixed(0)), highscore: this.highscore});
+            this.scene.start('gameOverScene', {score: Number((p1Score / 10).toFixed(0)), highscore: this.highscore, monolithHighScore: this.monolithHighScore});
 
             // resets variables on game over 
             back_speed = 1;

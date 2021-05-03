@@ -70,3 +70,4 @@ let isEarth = true;
 // initialize score
 let p1Score = 0;
 let scoreMulti = 1;
+let p1MonolithScore = 0;
