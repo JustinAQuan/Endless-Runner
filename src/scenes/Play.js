@@ -381,7 +381,7 @@ class Play extends Phaser.Scene {
             this.earth_bg1.tilePositionX += back_speed;
             this.earth_bg2.tilePositionX += mid_speed;
             this.earth_bg3.tilePositionX += fore_speed;
-            this.earthFloor.tilePositionX += ground_speed;
+            this.earthFloor.tilePositionX += ground_speed * .6;
         }
         else {
             // space parallax 
@@ -406,7 +406,7 @@ class Play extends Phaser.Scene {
             // sets velocity for obstacles 
             this.astroidGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
             this.batGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
-            this.catGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
+            this.catGroup.setVelocityX(gameOptions.obstacleSpeed * 2 * -1);
             this.earthMonolithGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
             this.spacePuppyGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
             this.spaceMonolithGroup.setVelocityX(gameOptions.obstacleSpeed * -1);
@@ -504,7 +504,7 @@ class Play extends Phaser.Scene {
 
         if (isEarth) {
             // creates earth monolith
-            if((p1Score / 30) % 25 == 0 && this.earthMonolithGroup.getLength() < 4){
+            if((p1Score / 30) % 100 == 0 && this.earthMonolithGroup.getLength() < 4){
                 this.makeEarthMonolithFunc(game.config.width + 55);
                 this.canTeleport = true; // can teleport when monolith appears
                 this.sound.play("monolith_appear_sfx");
@@ -512,7 +512,7 @@ class Play extends Phaser.Scene {
         }
         else {
             // creates space monolith 
-            if((p1Score / 30) % 25 == 0 && this.spaceMonolithGroup.getLength() < 4){
+            if((p1Score / 30) % 100 == 0 && this.spaceMonolithGroup.getLength() < 4){
                 this.makeSpaceMonolithFunc(game.config.width + 55);
                 this.canTeleport = true; // can teleport when monolith appears 
                 this.sound.play("monolith_appear_sfx");
